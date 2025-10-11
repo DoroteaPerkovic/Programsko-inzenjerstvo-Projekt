@@ -24,12 +24,12 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 #Instalcija
 # Članovi tima 
 > Popis članova tima/linkovi/ glavni doprinos
-> Jakov Jauk
-> Borna Matković
-> Ivano Markić
-> Luka Matešković
-> Tea Poplašen
-> Dorotea Perković - voditelj
+> Jakov Jauk,
+> Borna Matković,
+> Ivano Markić,
+> Luka Matešković,
+> Tea Poplašen i
+> Dorotea Perković - voditelj tima
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
