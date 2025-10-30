@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: "Arial";
+  font-size: 20px;
+}
+
+.Kontenjer {
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% - 20px); /*ovih 20 px se doda na margin*/
+  height: 70vh;
+  margin-top: 15vh; 
+}
+
+.Blok {
+  background-color: rgba(40, 189, 214, 1);
+  width: 50%;
+  height: 77%;
+  margin: 20px;
+  /*border-radius: 20px;*/
+  box-shadow: 5px 5px 15px rgb(131, 128, 128);
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  flex-direction:  column; 
+}
+
+.ZaglavljeBloka{
+    background-color: rgba(233, 232, 232, 1);
+    height: 15%;
+    width: 50%;
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    text-align: center;
+    box-shadow: 2px 3px 7px rgb(118, 118, 118);
+      
+}
+
+.TijeloBloka{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.Registracija{
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: auto auto;  
+  gap:8%;
+}
+
+.Registracija button{
+  grid-column: 2 / span 1;
+  justify-self: end;
+  padding: 10px 20px;
+  margin-left: 0;
+}
+
+.Labeli{
+  margin-top: 30px;
+  grid-column: 1/span 1;
+  display: flex;
+  flex-direction: column;
+  justify-self: start;
+}
+
+.polje {
+  display: flex;          
+  align-items: center;    
+  margin-bottom: 15px;    
+  background-color: rgba(233, 232, 232, 1);
+  gap: 5px;
+  padding: 13px;
+}
+
+.polje input {
+  margin-top: 1%;
+  width: 45%;
+  border: 0px;
+  background-color: rgba(233, 232, 232, 1);
+}
+
+.polje input:focus {
+  border-color: #007bff;      
+  background-color: #e6f0ff;  
+  outline: none;               
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
+.Uloga{
+  background-color: rgba(233, 232, 232, 1);
+  border: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Uloga legend{
+  position: relative;
+  top: 15%; 
+  left: 7%;
+  background-color: rgba(55, 52, 53, 1);
+  padding: 5px;
+  color: white;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.Uloga label{
+   position: relative; 
+   top: 35%; 
+   left: 10%;
+  }
+
+.Uloga label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.Uloga input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007bff;
+}
+
+
+
+
+

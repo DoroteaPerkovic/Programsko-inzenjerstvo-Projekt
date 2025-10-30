@@ -1,0 +1,93 @@
+.Headerbox {
+    background-color: aliceblue;
+    min-width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    min-height: 15vh;
+    overflow: hidden;
+    transform: translateY(-100%);
+    animation: slideIn 0.7s forwards ease-out;
+
+}
+
+.stanLogo {
+    max-height: 100vh;
+    border-radius: 50%;
+    position: fixed;
+    top: 0.5vh;
+    left: 10px;
+    width: 20vh;
+    height: auto;
+    z-index: 1000;
+    /*border: 2px solid black;*/
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: translateY(-100%);
+    animation: slideIn 0.7s forwards ease-out;
+
+}
+
+
+.profile {
+    filter: invert(1);
+    max-height: 90%;
+    padding-top: 1vh;
+    object-fit: contain;
+}
+
+.archive {
+    display: none;
+    max-height: 70%;
+    margin-right: 3vw;
+    filter: invert(1);
+    padding-top: 1vh;
+    width: auto;
+    object-fit: contain;
+
+}
+
+
+.gornji {
+    flex: 3;
+    background-color: rgb(40, 189, 214);
+}
+
+.doljnji {
+    flex: 2;
+    display: flex;
+    max-height: 7vh;
+
+}
+
+
+.lijevo {
+    flex: 1;
+    max-width: 12vh;
+    background-color: transparent;
+}
+
+.desno1 {
+    flex: 7;
+    text-align: end;
+    background-color: rgb(55, 52, 53);
+
+}
+
+.desno2,
+.desno3 {
+    flex: 1;
+    text-align: center;
+    background-color: rgb(55, 52, 53);
+    padding-right: 1vw;
+
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateY(0);
+    }
+}
