@@ -16,7 +16,7 @@ body{
   align-items: center;
   width: calc(100% - 20px); /*ovih 20 px se doda na margin*/
   height: 70vh;
-  margin-top: 15vh; 
+  /*margin-top: 15vh; */
 }
 
 .Blok {

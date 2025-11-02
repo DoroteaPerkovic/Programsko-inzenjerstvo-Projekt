@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './AktualniSastanci.css'
+import React, { useState} from 'react';
+import './Sastanci.css'
 
 const sastanciData = [
     {
@@ -21,7 +21,7 @@ const sastanciData = [
         sazetak: "Razmatranje ponude za hitni servis lifta i troškove popravka.",
         vrijeme: "2025-11-15T19:30",
         mjesto: "Online (Teams poveznica)",
-        stanje: "Objavljen",
+        stanje: "Planiran",
         točkeDnevnogReda: [
             { naziv: "Odobrenje troška popravka lifta", pravniUcinak: true }
         ],
@@ -33,7 +33,7 @@ const sastanciData = [
         sazetak: "Planirani troškovi i budžet za 2026. te prijedlozi uređenja okućnice.",
         vrijeme: "2025-12-20T17:00",
         mjesto: "Društvena prostorija zgrade, Trg Zrinjskog 8",
-        stanje: "Objavljen",
+        stanje: "Arhiviran",
         točkeDnevnogReda: [
             { naziv: "Usvajanje financijskog plana za 2026.", pravniUcinak: true },
             { naziv: "Uređenje zelene površine ispred zgrade", pravniUcinak: false },
@@ -47,7 +47,7 @@ const sastanciData = [
         sazetak: "Planirani troškovi i budžet za 2026. te prijedlozi uređenja okućnice.",
         vrijeme: "2025-12-20T17:00",
         mjesto: "Društvena prostorija zgrade, Trg Zrinjskog 8",
-        stanje: "Objavljen",
+        stanje: "Obavljen",
         točkeDnevnogReda: [
             { naziv: "Usvajanje financijskog plana za 2026.", pravniUcinak: true },
             { naziv: "Uređenje zelene površine ispred zgrade", pravniUcinak: false },
@@ -72,7 +72,7 @@ const sastanciData = [
 ];
 
 
-function AktualniSastanci() {
+function Sastanci({category}) {
     const [potvrde, setPotvrde] = useState({});
 
     const handleCheckboxChange = (id, checked) => {
@@ -84,9 +84,18 @@ function AktualniSastanci() {
     };
 
     return (
+    <div>
+        <h1 className='Naslov'> {category ? `${category} sastanci:` : 'Sastanci:'} </h1>
         <div className='okvirAS'>
             {sastanciData
-                .filter(sastanak => sastanak.stanje === "Objavljen")
+                .filter(sastanak => {
+                        if (category === "Planirani") return sastanak.stanje === "Planiran";
+                        if (category === "Objavljeni") return sastanak.stanje === "Objavljen";
+                        if (category === "Obavljeni") return sastanak.stanje === "Obavljen";
+                        if (category === "Arhivirani") return sastanak.stanje === "Arhiviran";
+                        return true; 
+                    })
+
                 .map((sastanak) => (
                     <div key={sastanak.id} className='sastanakAS'>
                         <div className='naslovAS'>
@@ -130,7 +139,8 @@ function AktualniSastanci() {
                     </div>
                 ))}
         </div>
+    </div>
     );
 }
 
-export default AktualniSastanci;
+export default Sastanci;

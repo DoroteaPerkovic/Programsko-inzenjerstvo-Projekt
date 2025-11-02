@@ -1,9 +1,9 @@
 .okvirAS {
-    margin-top: 5vh;
+    margin-top: 2vh;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    width: 100vw;
+    width: 98vw; 
     box-sizing: border-box;
     gap: 1vw;
     scroll-behavior: smooth;
@@ -106,5 +106,10 @@
 }
 
 .kontrolaVisine {
-    height: 5vh;
+    height: 7vh;
+}
+
+.Naslov{
+    margin-top: 6vh;
+    margin-left: 1vw;
 }
