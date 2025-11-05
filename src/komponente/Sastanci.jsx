@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import './Sastanci.css'
 
 const sastanciData = [
@@ -72,7 +72,7 @@ const sastanciData = [
 ];
 
 
-function Sastanci({category}) {
+function Sastanci({ category }) {
     const [potvrde, setPotvrde] = useState({});
 
     const handleCheckboxChange = (id, checked) => {
@@ -84,62 +84,62 @@ function Sastanci({category}) {
     };
 
     return (
-    <div>
-        <h1 className='Naslov'> {category ? `${category} sastanci:` : 'Sastanci:'} </h1>
-        <div className='okvirAS'>
-            {sastanciData
-                .filter(sastanak => {
+        <div>
+            <h1 className='Naslov'> {category ? `${category} sastanci:` : 'Sastanci:'} </h1>
+            <div className='okvirAS'>
+                {sastanciData
+                    .filter(sastanak => {
                         if (category === "Planirani") return sastanak.stanje === "Planiran";
                         if (category === "Objavljeni") return sastanak.stanje === "Objavljen";
                         if (category === "Obavljeni") return sastanak.stanje === "Obavljen";
                         if (category === "Arhivirani") return sastanak.stanje === "Arhiviran";
-                        return true; 
+                        return true;
                     })
 
-                .map((sastanak) => (
-                    <div key={sastanak.id} className='sastanakAS'>
-                        <div className='naslovAS'>
-                            <h3>{sastanak.naslov}</h3>
-                        </div>
-                        <div className='sredina'>
-                            <div className='sazetakAS'>
-                                <p>{sastanak.sazetak}</p>
+                    .map((sastanak) => (
+                        <div key={sastanak.id} className='sastanakAS'>
+                            <div className={`naslovAS ${sastanak.stanje.toLowerCase()}`}>
+                                <h3>{sastanak.naslov}</h3>
+                            </div>
+                            <div className={`sredina ${sastanak.stanje.toLowerCase()}`}>
+                                <div className='sazetakAS'>
+                                    <p>{sastanak.sazetak}</p>
+                                </div>
+                                <div>
+                                    <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>⇢ Točke dnevnog reda ⇠</p>
+                                    <ul>
+                                        {sastanak.točkeDnevnogReda.map((toc, idx) => (
+                                            <li key={idx}>
+                                                {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>🗓️</p>
+                                <div className='vrijemeAS'>
+                                    <p>{new Date(sastanak.vrijeme).toLocaleString()}</p>
+                                </div>
+                                <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>📍</p>
+                                <div className='mjestoAS'>
+                                    <p>{sastanak.mjesto}</p>
+                                </div>
+                                <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>👥</p>
+                                <p className='psAS'>{potvrde[sastanak.id] ?? sastanak.brojPotvrdjenihSudjelovanja}</p>
+                                <p className='kontrolaVisine '></p>
                             </div>
                             <div>
-                                <p className='emoji'>⇢ Točke dnevnog reda ⇠</p>
-                                <ul>
-                                    {sastanak.točkeDnevnogReda.map((toc, idx) => (
-                                        <li key={idx}>
-                                            {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
+                                    Potvrđujem dolazak
+                                    <input
+                                        type="checkbox"
+                                        onChange={e => handleCheckboxChange(sastanak.id, e.target.checked)}
+                                    />
+                                </label>
                             </div>
-                            <p className='emoji'>🗓️</p>
-                            <div className='vrijemeAS'>
-                                <p>{new Date(sastanak.vrijeme).toLocaleString()}</p>
-                            </div>
-                            <p className='emoji'>📍</p>
-                            <div className='mjestoAS'>
-                                <p>{sastanak.mjesto}</p>
-                            </div>
-                            <p className='emoji'>👥</p>
-                            <p className='psAS'>{potvrde[sastanak.id] ?? sastanak.brojPotvrdjenihSudjelovanja}</p>
-                            <p className='kontrolaVisine '></p>
                         </div>
-                        <div>
-                            <label className='cbAS'>
-                                Potvrđujem dolazak
-                                <input
-                                    type="checkbox"
-                                    onChange={e => handleCheckboxChange(sastanak.id, e.target.checked)}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+            </div>
         </div>
-    </div>
     );
 }
 

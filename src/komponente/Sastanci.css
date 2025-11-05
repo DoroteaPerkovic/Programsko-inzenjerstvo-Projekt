@@ -3,7 +3,7 @@
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    width: 98vw; 
+    width: 98vw;
     box-sizing: border-box;
     gap: 1vw;
     scroll-behavior: smooth;
@@ -31,6 +31,72 @@
     justify-content: center;
     border-radius: 8px 8px 0 0;
     padding: 0.5em 1em;
+    transition: background 0.4s ease;
+}
+
+.cbAS.planiran {
+    background: linear-gradient(to top, #fff176, #ffeb3b);
+}
+
+.cbAS.objavljen {
+    background: linear-gradient(to top, #90caf9, #42a5f5);
+}
+
+.cbAS.obavljen {
+    background: linear-gradient(to top, #a5d6a7, #66bb6a);
+}
+
+.cbAS.arhiviran {
+    background: linear-gradient(to top, #ce93d8, #ab47bc);
+}
+
+.naslovAS.planiran {
+    background: linear-gradient(to bottom, #ffeb3b, #fff176);
+}
+
+.naslovAS.objavljen {
+    background: linear-gradient(to bottom, #42a5f5, #90caf9);
+}
+
+
+.naslovAS.obavljen {
+    background: linear-gradient(to bottom, #66bb6a, #a5d6a7);
+}
+
+.naslovAS.arhiviran {
+    background: linear-gradient(to bottom, #ab47bc, #ce93d8);
+}
+
+.sredina.planiran {
+    background-color: #fffde7;
+}
+
+.sredina.objavljen {
+    background-color: #e3f2fd;
+}
+
+.sredina.obavljen {
+    background-color: #e8f5e9;
+}
+
+.sredina.arhiviran {
+    background-color: #f3e5f5;
+}
+
+.sredina.planiran {
+    background-color: #fffde7;
+}
+
+.sredina.objavljen {
+    background-color: #e3f2fd;
+}
+
+.sredina.obavljen {
+    background-color: #e8f5e9;
+}
+
+.sredina.arhiviran {
+    background-color: #f3e5f5;
 }
 
 .naslovAS h3 {
@@ -53,7 +119,6 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(180deg, rgb(190, 190, 190), rgb(160, 160, 160));
     border-radius: 0 0 8px 8px;
     padding: 0.8em 1em;
     display: flex;
@@ -71,11 +136,8 @@
     width: 2rem;
     height: 2rem;
     accent-color: rgb(15, 203, 21);
-
     cursor: pointer;
 }
-
-
 
 .emoji {
     text-align: center;
@@ -95,7 +157,6 @@
 .psAS,
 .vrijemeAS {
     text-align: center;
-
 }
 
 .psAS {
@@ -109,7 +170,28 @@
     height: 7vh;
 }
 
-.Naslov{
+.Naslov {
     margin-top: 6vh;
     margin-left: 1vw;
+}
+
+.sastanakAS ul {
+    margin-left: 5%;
+    padding-left: 5%;
+}
+
+.emoji.planiran {
+    background-color: #fffef5;
+}
+
+.emoji.objavljen {
+    background-color: #f0f9ff;
+}
+
+.emoji.obavljen {
+    background-color: #f1fcf1;
+}
+
+.emoji.arhiviran {
+    background-color: #faf0fc;
 }
