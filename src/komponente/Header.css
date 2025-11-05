@@ -1,36 +1,31 @@
 .Headerbox {
     background-color: aliceblue;
-    min-width: 100vw;
+    width: 100vw;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    min-height: 15vh;
-    overflow: hidden;
+    position: sticky;
+    top: 0; 
+    z-index: 1000;
+    height: 15vh;
+    overflow: visible;
     transform: translateY(-100%);
     animation: slideIn 0.7s forwards ease-out;
-
 }
 
 .stanLogo {
-    max-height: 100vh;
     border-radius: 50%;
     position: fixed;
     top: 0.5vh;
     left: 10px;
     width: 20vh;
     height: auto;
-    z-index: 1000;
-    /*border: 2px solid black;*/
+    z-index: 1100;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
     transform: translateY(-100%);
     animation: slideIn 0.7s forwards ease-out;
-
 }
-
 
 .profile {
     filter: invert(1);
@@ -40,16 +35,12 @@
 }
 
 .archive {
-    display: none;
-    max-height: 70%;
-    margin-right: 3vw;
     filter: invert(1);
+    max-height: 80%;
     padding-top: 1vh;
-    width: auto;
     object-fit: contain;
-
+    cursor: pointer;
 }
-
 
 .gornji {
     flex: 3;
@@ -60,9 +51,7 @@
     flex: 2;
     display: flex;
     max-height: 7vh;
-
 }
-
 
 .lijevo {
     flex: 1;
@@ -74,20 +63,74 @@
     flex: 7;
     text-align: end;
     background-color: rgb(55, 52, 53);
-
 }
 
-.desno2,
+.desno2 {
+    flex: 1;
+    text-align: center;
+    background-color: rgb(55, 52, 53);
+    padding-right: 2vw;
+    padding-top: 2px;
+}
+
 .desno3 {
     flex: 1;
     text-align: center;
     background-color: rgb(55, 52, 53);
     padding-right: 1vw;
-
 }
 
 @keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+    }
     to {
+        transform: translateY(0);
+    }
+}
+
+.desno2 {
+    position: relative;
+}
+
+.Menu {
+    position: absolute;
+    top: 5.5vh; /* ispod ikone */
+    right: 2vw;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 160px;
+    z-index: 1200;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.Menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.Menu li {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.Menu li:hover {
+    background-color: #f3f3f3;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
         transform: translateY(0);
     }
 }
