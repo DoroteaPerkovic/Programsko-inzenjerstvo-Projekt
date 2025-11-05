@@ -29,7 +29,9 @@ function Header({userRole, onSelectcategory}) {
                             <div className ="Menu">
                                 <ul>
                                     {itemsToShow.map((item) => (
-                                        <li key = {item} onClick={() => onSelectcategory(item)}>{item}</li>
+                                        <li key = {item} onClick={() => { if(item === "Novi sastanak") return; //tu cemo trebat dodat novu stranicu
+                                            onSelectcategory(item);
+                                        }}>{item}</li>
                                     ))}
                                 </ul>
                             </div>
