@@ -1,5 +1,5 @@
 import './Login.css'
-import profilePic from './assets/pfp.png'
+import profilePic from '../assets/pfp.png'
 
 function Login() {
     return (
