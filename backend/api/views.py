@@ -5,19 +5,21 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import UserProfile
 from django.contrib.auth import authenticate
-from .serializer import RegisterSerializer, UserProfileSerializer
+from .serializer import RegisterSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def register(request):
-    serializer = RegisterSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"message": "User created"}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def list_users(request):
+    users = User.objects.all()
+    serializer = RegisterSerializer(users, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -51,26 +53,43 @@ def create_user_by_admin(request):
 GOOGLE_CLIENT_ID = '826648226919-fpclgpuee5fhdrdb6mas7fevhkkjq2lr.apps.googleusercontent.com'  
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def google_auth(request):
     token = request.data.get('token')
     if not token:
-        return Response({'error': 'No token provided'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'No token provided'}, status=400)
 
     try:
         idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), GOOGLE_CLIENT_ID)
-        
         email = idinfo.get('email')
-        name = idinfo.get('name', '')
-        
-        user, created = User.objects.get_or_create(username=email, defaults={'email': email, 'first_name': name})
-        
+        name = idinfo.get('name')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Nemate pristup ovoj aplikaciji.'}, status=403)
+
         refresh = RefreshToken.for_user(user)
+
+        profile = UserProfile.objects.get(user=user)
+        user_role = profile.role 
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
+            'userRole': user_role,
+            'username': user.username
         })
     except ValueError:
-        return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Invalid token'}, status=400)
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+        profile = UserProfile.objects.get(user=user)
+        data['username'] = user.username
+        data['userRole'] = profile.role
+        return data
 
-    
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
