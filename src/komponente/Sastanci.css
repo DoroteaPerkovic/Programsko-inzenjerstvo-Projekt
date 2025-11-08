@@ -1,3 +1,7 @@
+body{
+    margin: 0px;
+}
+
 .okvirAS {
     margin-top: 2vh;
     display: flex;

@@ -14,7 +14,7 @@ function Header({ userRole, onSelectcategory }) {
     };
     const itemsToShow = menuItems[userRole] || [];
     return (
-        <>
+        <div>
             <img className="stanLogo" src={logo} alt="Logo" />
             <div className="Headerbox">
                 <div className="gornji"></div>
@@ -43,7 +43,7 @@ function Header({ userRole, onSelectcategory }) {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
