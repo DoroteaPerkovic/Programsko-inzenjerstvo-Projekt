@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -5,10 +6,11 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import UserProfile
 from django.contrib.auth import authenticate
-from .serializer import RegisterSerializer
+from .serializer import RegisterSerializer, UserProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
+from django.contrib import messages
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -19,7 +21,6 @@ def list_users(request):
     users = User.objects.all()
     serializer = RegisterSerializer(users, many=True)
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -83,6 +84,15 @@ def google_auth(request):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        username_field = attrs.get('username')
+        if username_field and '@' in username_field:
+            try:
+                user_obj = User.objects.get(email=username_field)
+                
+                attrs['username'] = user_obj.username
+            except User.DoesNotExist:
+                pass
+
         data = super().validate(attrs)
         user = self.user
         profile = UserProfile.objects.get(user=user)
@@ -92,4 +102,3 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
