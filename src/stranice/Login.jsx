@@ -1,12 +1,14 @@
 import './Login.css'
 import profilePic from '../assets/pfp.png'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { loginWithUsernameAndPassword } from '../services/LoginService'
 
 function Login() {
     const [usernameOrEmail, setUsernameOrEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -21,11 +23,11 @@ function Login() {
                 localStorage.setItem('userRole', result.data.userRole)
                 
                 if (result.data.userRole === 'admin') {
-                    window.location.href = '/admin'
+                    navigate('/admin')
                 } else if (result.data.userRole === 'predstavnik') {
-                    window.location.href = '/predstavnik'
+                    navigate('/predstavnik')
                 } else {
-                    window.location.href = '/suvlasnici'
+                    navigate('/suvlasnici')
                 }
             } else {
                 setError('Pogrešno korisničko ime/email ili lozinka')
