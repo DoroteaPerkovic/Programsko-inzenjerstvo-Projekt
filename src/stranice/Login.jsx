@@ -1,17 +1,52 @@
 import './Login.css'
 import profilePic from '../assets/pfp.png'
+import { useState } from 'react'
+import { loginWithUsernameAndPassword } from '../services/LoginService'
 
 function Login() {
+    const [usernameOrEmail, setUsernameOrEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setError('')
+
+        try {
+            const result = await loginWithUsernameAndPassword(usernameOrEmail, password)
+            if (result.ok) {
+                localStorage.setItem('access_token', result.data.access)
+                localStorage.setItem('refresh_token', result.data.refresh)
+                localStorage.setItem('username', result.data.username)
+                localStorage.setItem('userRole', result.data.userRole)
+                
+                if (result.data.userRole === 'admin') {
+                    window.location.href = '/admin'
+                } else if (result.data.userRole === 'predstavnik') {
+                    window.location.href = '/predstavnik'
+                } else {
+                    window.location.href = '/suvlasnici'
+                }
+            } else {
+                setError('Pogrešno korisničko ime/email ili lozinka')
+            }
+        } catch (err) {
+            setError('Greška pri prijavljivanju')
+        }
+    }
+
     return (
         <div className='LogInCard'>
             <img className="pfp" src={profilePic} alt="Profile" />
             <h2>MEMBER LOGIN</h2>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Email"
+                    type="text"
+                    id="usernameOrEmail"
+                    name="usernameOrEmail"
+                    placeholder="Username ili Email"
+                    value={usernameOrEmail}
+                    onChange={(e) => setUsernameOrEmail(e.target.value)}
                     required
                 />
                 <br />
@@ -20,9 +55,12 @@ function Login() {
                     id="password"
                     name="password"
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                 />
                 <br />
+                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <button type="submit">Login</button>
             </form>
         </div>

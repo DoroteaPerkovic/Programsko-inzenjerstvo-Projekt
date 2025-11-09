@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import Suvlasnici from './stranice/Suvlasnici.jsx'
+import Login from './stranice/Login.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Suvlasnici />
+    <Login />
   </StrictMode>,
 )
