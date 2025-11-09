@@ -82,12 +82,27 @@ def google_auth(request):
         return Response({'error': 'Invalid token'}, status=400)
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return super().get_token(user)
+        
     def validate(self, attrs):
+        username_or_email = attrs.get(self.username_field, '')
+        
+        if '@' in username_or_email:
+            try:
+                user_obj = User.objects.get(email=username_or_email)
+                attrs[self.username_field] = user_obj.username
+            except User.DoesNotExist:
+                pass
+        
         data = super().validate(attrs)
+        
         user = self.user
         profile = UserProfile.objects.get(user=user)
         data['username'] = user.username
         data['userRole'] = profile.role
+        
         return data
 
 class CustomTokenObtainPairView(TokenObtainPairView):
