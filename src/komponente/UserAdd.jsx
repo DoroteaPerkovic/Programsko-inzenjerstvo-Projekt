@@ -17,8 +17,7 @@ function UserAdd() {
   const handleSubmit = async e => {
     e.preventDefault();
     let token = localStorage.getItem('access');
-    let res = await createUserByAdmin(form, token);
-    // If token expired, try to refresh
+    let res = await createUserByAdmin(form, token)
     if (res.data && res.data.code === 'token_not_valid' && res.data.messages[0].message.includes('expired')) {
       const refresh = localStorage.getItem('refresh');
       const refreshRes = await refreshAccessToken(refresh);
