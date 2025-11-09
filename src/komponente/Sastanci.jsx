@@ -72,7 +72,7 @@ const sastanciData = [
 ];
 
 
-function Sastanci({ category }) {
+function Sastanci({ category, userRole }) {
     const [potvrde, setPotvrde] = useState({});
 
     const handleCheckboxChange = (id, checked) => {
@@ -127,15 +127,17 @@ function Sastanci({ category }) {
                                 <p className='psAS'>{potvrde[sastanak.id] ?? sastanak.brojPotvrdjenihSudjelovanja}</p>
                                 <p className='kontrolaVisine '></p>
                             </div>
-                            <div>
-                                <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
-                                    Potvrđujem dolazak
-                                    <input
-                                        type="checkbox"
-                                        onChange={e => handleCheckboxChange(sastanak.id, e.target.checked)}
-                                    />
-                                </label>
-                            </div>
+                            {sastanak.stanje === "Objavljen" && userRole === "suvlasnik" && (
+                                <div>
+                                    <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
+                                        Potvrđujem dolazak
+                                        <input
+                                            type="checkbox"
+                                            onChange={e => handleCheckboxChange(sastanak.id, e.target.checked)}
+                                        />
+                                    </label>
+                                </div>
+                            )}
                         </div>
                     ))}
             </div>

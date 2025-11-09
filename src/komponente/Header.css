@@ -10,13 +10,13 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 15vh;
+    height: 15vh; 
     overflow: visible;
 }
 
 .stanLogo {
     border-radius: 50%;
-    position: absolute;
+    position: fixed;
     top: 0.5vh;
     left: 10px;
     width: 20vh;

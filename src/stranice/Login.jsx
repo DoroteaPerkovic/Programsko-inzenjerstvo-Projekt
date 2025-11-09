@@ -40,13 +40,13 @@ function Login() {
     return (
         <div className='LogInCard'>
             <img className="pfp" src={profilePic} alt="Profile" />
-            <h2>MEMBER LOGIN</h2>
+            <h2>PRIJAVA KORISNIKA</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     id="usernameOrEmail"
                     name="usernameOrEmail"
-                    placeholder="Username ili Email"
+                    placeholder="Korisničko ime ili Email"
                     value={usernameOrEmail}
                     onChange={(e) => setUsernameOrEmail(e.target.value)}
                     required
@@ -56,14 +56,14 @@ function Login() {
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Lozinka"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
                 <br />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">Login</button>
+                <button type="submit">Prijava</button>
             </form>
         </div>
     );
