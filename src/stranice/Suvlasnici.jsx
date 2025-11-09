@@ -8,10 +8,10 @@ function App(){
   return(
     <>
     <Header userRole="suvlasnik" onSelectcategory={setselectedCategory}/>
-    <Sastanci category = {selectedCategory}/>
+    <Sastanci category = {selectedCategory} userRole="suvlasnik"/>
     </>
   );
 
 }
 
-export default App
+export default App 
