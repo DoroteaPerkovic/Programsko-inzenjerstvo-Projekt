@@ -17,8 +17,8 @@ function Login() {
         try {
             const result = await loginWithUsernameAndPassword(usernameOrEmail, password)
             if (result.ok) {
-                localStorage.setItem('access_token', result.data.access)
-                localStorage.setItem('refresh_token', result.data.refresh)
+                localStorage.setItem('access', result.data.access)
+                localStorage.setItem('refresh', result.data.refresh)
                 localStorage.setItem('username', result.data.username)
                 localStorage.setItem('userRole', result.data.userRole)
                 
