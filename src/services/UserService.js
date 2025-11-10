@@ -1,5 +1,7 @@
+import { API_URL } from '../config';
+
 export async function createUserByAdmin(user, token) {
-    const response = await fetch('http://localhost:8000/api/create-user-admin/', {
+    const response = await fetch(`${API_URL}/api/create-user-admin/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -12,7 +14,7 @@ export async function createUserByAdmin(user, token) {
   }
   
 export async function refreshAccessToken(refresh) {
-    const response = await fetch('http://localhost:8000/api/token/refresh/', {
+    const response = await fetch(`${API_URL}/api/token/refresh/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh })
