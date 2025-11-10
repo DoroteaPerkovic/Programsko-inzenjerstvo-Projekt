@@ -1,4 +1,4 @@
-import { API_URL } from './config';
+import { API_URL } from '../config';
 
 export async function loginWithUsernameAndPassword(usernameOrEmail, password) {
   const response = await fetch(`${API_URL}/api/token/`, {
