@@ -30,13 +30,14 @@ Funkcionalnosti srednjeg prioriteta uključuju unos i pregled zaključaka sastan
 
 #Instalcija
 # Članovi tima 
-> Popis članova tima/linkovi/ glavni doprinos
-> Jakov Jauk,
-> Borna Matković,
-> Ivano Markić,
-> Luka Matešković,
-> Tea Poplašen i
-> Dorotea Perković - voditelj tima
+> Popis članova tima/linkovi/ glavni doprinos<br>
+
+Jakov Jauk - backend <br>
+Borna Matković  frontend <br>
+Ivano Markić - backend <br>
+Luka Matešković - backend <br>
+Tea Poplašen - backend   <br>
+Dorotea Perković - voditelj tima i frontend <br>
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
