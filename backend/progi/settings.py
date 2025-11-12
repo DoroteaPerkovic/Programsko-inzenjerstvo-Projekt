@@ -191,4 +191,4 @@ SOCIALACCOUNT_STORE_TOKENS = True
 
 SOCIALACCOUNT_ADAPTER = 'api.adapters.MySocialAccountAdapter'
 
-SOCIALACCOUNT_ADAPTER = 'api.adapters.NoSignupSocialAccountAdapter'
+
