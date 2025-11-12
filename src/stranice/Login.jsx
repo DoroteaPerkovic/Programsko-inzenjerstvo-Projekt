@@ -3,6 +3,7 @@ import profilePic from '../assets/pfp.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginWithUsernameAndPassword } from '../services/LoginService'
+import GoogleLoginButton from '../komponente/google';
 
 function Login() {
     const [usernameOrEmail, setUsernameOrEmail] = useState('')
@@ -21,6 +22,9 @@ function Login() {
                 localStorage.setItem('refresh', result.data.refresh)
                 localStorage.setItem('username', result.data.username)
                 localStorage.setItem('userRole', result.data.userRole)
+
+                console.log('Prijavljen korisnik:', result.data.username)
+                console.log('Uloga korisnika:', result.data.userRole)
                 
                 if (result.data.userRole === 'admin') {
                     navigate('/admin')
@@ -62,8 +66,9 @@ function Login() {
                     required
                 />
                 <br />
-                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <button type="submit">Prijava</button>
+                <br />
+                <GoogleLoginButton setError={setError}/>
             </form>
         </div>
     );
