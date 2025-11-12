@@ -59,6 +59,8 @@ button[type="submit"] {
 
 .google-login-button { 
     margin-top: 10px;
+    background-color: rgb(24, 24, 85);
+    color: white;
     gap: 8px; 
     padding: 8px 12px;
 }
