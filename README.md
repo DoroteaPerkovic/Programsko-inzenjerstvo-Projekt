@@ -28,7 +28,10 @@ Funkcionalnosti srednjeg prioriteta uključuju unos i pregled zaključaka sastan
 
 # Tehnologije
 
-#Instalcija
+#Instalcija  
+Aplikacija je implementirana i javno dostupna na domeni: https://programsko-inzenjerstvo-projekt-1.onrender.com
+
+
 # Članovi tima 
 > Popis članova tima/linkovi/ glavni doprinos<br>
 
