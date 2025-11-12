@@ -14,24 +14,11 @@ class GoogleLogin(SocialLoginView):
     callback_url = "http://localhost:5173" 
     client_class = OAuth2Client
 
-class NoSignupSocialAccountAdapter(DefaultSocialAccountAdapter):
-    def pre_social_login(self, request, sociallogin):
-        user_email = sociallogin.user.email
-        if User.objects.filter(email=user_email).exists():
-            return
-        raise PermissionDenied("Korisnik s ovim emailom nije odobren za prijavu!")
-
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
-        user_email = sociallogin.account.extra_data.get('email')
+        email = sociallogin.account.extra_data.get('email')
         User = get_user_model()
-
-        if not User.objects.filter(email=user_email).exists():
-            user = User.objects.create_user(username=sociallogin.account.extra_data.get('name', user_email), email=user_email)
-            UserProfile.objects.create(user=user, role='suvlasnik') 
-            sociallogin.connect(request, user)
-            return
-
-        if user_email and User.objects.filter(email=user_email).exists():
-            user = User.objects.get(email=user_email)
-            sociallogin.connect(request, user)
+        if not User.objects.filter(email=email).exists():
+            raise PermissionDenied("Prijava nije moguća – kontaktirajte administratora.")
+        user = User.objects.get(email=email)
+        sociallogin.connect(request, user)
