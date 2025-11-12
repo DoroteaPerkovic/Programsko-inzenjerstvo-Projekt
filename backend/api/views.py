@@ -5,12 +5,14 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import UserProfile
 from django.contrib.auth import authenticate
-from .serializer import RegisterSerializer
+from .serializer import RegisterSerializer, CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.conf import settings
+import json
+from django.http import JsonResponse
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 
 
 @api_view(['GET'])
@@ -49,62 +51,25 @@ def create_user_by_admin(request):
     )
     return Response({'message': 'Korisnik kreiran!'}, status=status.HTTP_201_CREATED)
 
-
-GOOGLE_CLIENT_ID = '826648226919-fpclgpuee5fhdrdb6mas7fevhkkjq2lr.apps.googleusercontent.com'  
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def google_auth(request):
-    token = request.data.get('token')
-    if not token:
-        return Response({'error': 'No token provided'}, status=400)
-
-    try:
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), GOOGLE_CLIENT_ID)
-        email = idinfo.get('email')
-        name = idinfo.get('name')
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'error': 'Nemate pristup ovoj aplikaciji.'}, status=403)
-
-        refresh = RefreshToken.for_user(user)
-
-        profile = UserProfile.objects.get(user=user)
-        user_role = profile.role 
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'userRole': user_role,
-            'username': user.username
-        })
-    except ValueError:
-        return Response({'error': 'Invalid token'}, status=400)
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        return super().get_token(user)
-        
-    def validate(self, attrs):
-        username_or_email = attrs.get(self.username_field, '')
-        
-        if '@' in username_or_email:
-            try:
-                user_obj = User.objects.get(email=username_or_email)
-                attrs[self.username_field] = user_obj.username
-            except User.DoesNotExist:
-                pass
-        
-        data = super().validate(attrs)
-        
-        user = self.user
-        profile = UserProfile.objects.get(user=user)
-        data['username'] = user.username
-        data['userRole'] = profile.role
-        
-        return data
-
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
+class CustomGoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        user = self.user
+        if user.is_authenticated:
+            try:
+                profile = UserProfile.objects.get(user=user)
+                response.data['user'] = {
+                    'username': user.username,
+                    'role': profile.role
+                }
+            except UserProfile.DoesNotExist:
+                response.data['user'] = {
+                    'username': user.username,
+                    'role': None
+                }
+        return response
