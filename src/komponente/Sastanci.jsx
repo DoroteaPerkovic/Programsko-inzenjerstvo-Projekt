@@ -84,7 +84,7 @@ function Sastanci({ category, userRole }) {
     };
 
     return (
-        <div>
+        <div className ="tijelo">
             <h1 className='Naslov'> {category ? `${category} sastanci:` : 'Sastanci:'} </h1>
             <div className='okvirAS'>
                 {sastanciData
@@ -95,7 +95,7 @@ function Sastanci({ category, userRole }) {
                         if (category === "Arhivirani") return sastanak.stanje === "Arhiviran";
                         return true;
                     })
-
+ 
                     .map((sastanak) => (
                         <div key={sastanak.id} className='sastanakAS'>
                             <div className={`naslovAS ${sastanak.stanje.toLowerCase()}`}>

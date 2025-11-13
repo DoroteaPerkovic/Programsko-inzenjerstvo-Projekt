@@ -26,9 +26,18 @@ Funkcionalnosti visokog prioriteta obuhvaćaju prijavu korisnika prema ulozi (F-
 Funkcionalnosti srednjeg prioriteta uključuju unos i pregled zaključaka sastanaka (F-008, F-012), arhiviranje sastanaka nakon što su svi zaključci uneseni (F-009), te potvrdu sudjelovanja suvlasnika na sastanku (F-020). Sustav omogućuje i povezivanje točaka dnevnog reda s raspravama iz aplikacije StanBlog putem API-ja (F-011, F-017), čime se osigurava integracija formalnih odluka i neformalnih diskusija. Svi podaci o korisnicima, sastancima i zaključcima pohranjuju se u centraliziranu bazu podataka (F-018), čime se omogućuje jednostavno praćenje i transparentnost svih aktivnosti unutar sustava.
 
 
-# Tehnologije
+# Tehnologije   
 
-#Instalcija
+Aplikacija je izgrađena korištenjem višeslojne klijent-poslužitelj arhitekture temeljene na dizajn obrascu Model-View-Controller (MVC). Backend je razvijen pomoću Django (Python), podržavajući HTTP komunikaciju, dok frontend koristi React i JavaScript za dinamično korisničko iskustvo. Podaci se pohranjuju u relacijsku bazu podataka PostgreSQL za učinkovito upravljanje.
+
+Osnovne tehnologije uključuju HTTP/HTTPS za sigurnu komunikaciju i RESTful API-je za interakciju frontenda i backenda. Render smo koristili za postavljanje na javni poslužitelj. Ovaj tehnološki paket osigurava skalabilnost i održivost.
+
+
+# Instalcija  
+
+Aplikacija je implementirana i javno dostupna na domeni: https://programsko-inzenjerstvo-projekt-1.onrender.com
+
+
 # Članovi tima 
 > Popis članova tima/linkovi/ glavni doprinos<br>
 
@@ -40,7 +49,7 @@ Tea Poplašen - backend   <br>
 Dorotea Perković - voditelj tima i frontend <br>
 
 # Kontribucije
->Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
+Pravila su izdvojena  CONTRIBUTING.md
 
 
 

@@ -10,7 +10,7 @@ function Header({ userRole, onSelectcategory }) {
     const menuItems = {
         predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
         suvlasnik: ["Objavljeni", "Arhivirani"],
-        admin: []
+        admin: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
     };
     const itemsToShow = menuItems[userRole] || [];
     return (
