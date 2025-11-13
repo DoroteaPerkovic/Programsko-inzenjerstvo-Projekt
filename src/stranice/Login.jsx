@@ -17,15 +17,21 @@ function Login() {
         try {
             const result = await loginWithUsernameAndPassword(usernameOrEmail, password)
             if (result.ok) {
+                // Store tokens and user info
                 localStorage.setItem('access', result.data.access)
                 localStorage.setItem('refresh', result.data.refresh)
                 localStorage.setItem('username', result.data.username)
-                localStorage.setItem('userRole', result.data.userRole)
-                
-                if (result.data.userRole === 'admin') {
+                localStorage.setItem('email', result.data.email)
+                localStorage.setItem('userRole', result.data.role)
+                localStorage.setItem('userId', result.data.user_id)
+
+                const role = result.data.role
+                if (role === 'Administrator') {
                     navigate('/admin')
-                } else if (result.data.userRole === 'predstavnik') {
+                } else if (role === 'Predstavnik suvlasnika') {
                     navigate('/predstavnik')
+                } else if (role === 'Suvlasnik') {
+                    navigate('/suvlasnici')
                 } else {
                     navigate('/suvlasnici')
                 }
@@ -33,6 +39,7 @@ function Login() {
                 setError('Pogrešno korisničko ime/email ili lozinka')
             }
         } catch (err) {
+            console.error('Login error:', err)
             setError('Greška pri prijavljivanju')
         }
     }

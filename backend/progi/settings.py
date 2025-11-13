@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
+    'api.auth_backend.KorisnikAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
@@ -134,10 +135,15 @@ WSGI_APPLICATION = 'progi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.neegzizcdtevcrbxsqsj',
+        'PASSWORD': 'p09-nexify-team',
+        'HOST': 'aws-1-eu-north-1.pooler.supabase.com',
+        'PORT': '6543',
     }
 }
+
 
 
 # Password validation

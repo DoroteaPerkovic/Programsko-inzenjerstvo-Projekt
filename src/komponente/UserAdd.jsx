@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './UserAdd.css';
 import { createUserByAdmin, refreshAccessToken } from '../services/UserService.js';
 
 function UserAdd() {
   const [form, setForm] = useState({
-    username: '',
+    korisnicko_ime: '',
     email: '',
     password: '',
-    role: 'suvlasnik',
+    id_uloge: 3,
   });
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
     let token = localStorage.getItem('access');
     let res = await createUserByAdmin(form, token)
-    if (res.data && res.data.code === 'token_not_valid' && res.data.messages[0].message.includes('expired')) {
+
+    if (res.data && res.data.code === 'token_not_valid') {
       const refresh = localStorage.getItem('refresh');
       const refreshRes = await refreshAccessToken(refresh);
       if (refreshRes.ok && refreshRes.data.access) {
@@ -30,11 +32,13 @@ function UserAdd() {
         return;
       }
     }
+
     if (res.ok) {
-      alert('Korisnik dodan!');
-      setForm({ username: '', email: '', password: '', role: 'suvlasnik' });
+      alert('Korisnik uspješno dodan!');
+      setForm({ korisnicko_ime: '', email: '', password: '', id_uloge: 3 });
     } else {
-      alert('Greška: ' + JSON.stringify(res.data));
+      const errorMsg = res.data.korisnicko_ime?.[0] || res.data.email?.[0] || res.data.error || JSON.stringify(res.data);
+      alert('Greška: ' + errorMsg);
     }
   };
 
@@ -46,8 +50,8 @@ function UserAdd() {
           <form className="Registracija" onSubmit={handleSubmit}>
             <div className="Labeli">
               <div className="polje">
-                <label htmlFor="username">Korisničko ime:</label>
-                <input type="text" id="username" name="username" placeholder="Unesi ime" required value={form.username} onChange={handleChange} />
+                <label htmlFor="korisnicko_ime">Korisničko ime:</label>
+                <input type="text" id="korisnicko_ime" name="korisnicko_ime" placeholder="Unesi ime" required value={form.korisnicko_ime} onChange={handleChange} />
               </div>
               <div className="polje">
                 <label htmlFor="email">Email adresa:</label>
@@ -57,22 +61,16 @@ function UserAdd() {
                 <label htmlFor="password">Lozinka:</label>
                 <input type="password" id="password" name="password" placeholder="Unesi lozinku" required value={form.password} onChange={handleChange} />
               </div>
-              {/*
-              <div className="polje">
-                <label htmlFor="stanblog_url">Stan Blog URL:</label>
-                <input type="url" id="stanblog_url" name="stanblog_url" placeholder="URL" value={form.stanblog_url} onChange={handleChange} />
-              </div>
-              */}
             </div>
             <fieldset className="Uloga">
               <legend>ULOGA</legend>
               <label>
-                <input type="radio" name="role" value="suvlasnik" checked={form.role === 'suvlasnik'} onChange={handleChange} />
+                <input type="radio" name="id_uloge" value="3" checked={form.id_uloge === 3} onChange={(e) => setForm({ ...form, id_uloge: parseInt(e.target.value) })} />
                 Suvlasnik
               </label>
               <br />
               <label>
-                <input type="radio" name="role" value="predstavnik" checked={form.role === 'predstavnik'} onChange={handleChange} />
+                <input type="radio" name="id_uloge" value="2" checked={form.id_uloge === 2} onChange={(e) => setForm({ ...form, id_uloge: parseInt(e.target.value) })} />
                 Predstavnik suvlasnika
               </label>
               <br />
