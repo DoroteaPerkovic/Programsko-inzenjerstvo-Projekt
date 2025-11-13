@@ -1,24 +1,10 @@
 # StanPlan
-
-> Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
-> Isključivo ovisi o Vama!
-> 
-> Naravno, nijedan predložak nije idealan za sve projekte jer su potrebe i ciljevi različiti. Ne bojte se naglasiti Vaš cilj u ovoj početnoj stranici projekta, podržat ćemo ga bez obzira usredotočili se Vi više na tenologiju ili marketing.
-> 
-> Zašto ovaj dokument? Samo manji dio timova je do sada propoznao potrebu (a i meni je lakše pratiti Vaš rad).
-
 Projekt StanPlan predstavlja suvremeni pristup digitalizaciji upravljanja stambenim zgradama. Kroz razvoj ove aplikacije nastoji se unaprijediti organizacija, komunikacija i transparentnost među suvlasnicima. Time se stvara temelj za modernije, odgovornije i povezanije upravljanje zajedničkim prostorima i obavezama unutar višestambenih zgrada.
 
 # Opis projekta
 Ovaj projekt je rezultat timskog rada u sklopu projektnog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. Projekt StanPlan nastao je iz potrebe za modernijim i učinkovitijim načinom upravljanja stambenim zgradama. U praksi se pokazalo da je komunikacija između suvlasnika i predstavnika često neorganizirana, što otežava donošenje odluka i praćenje dogovorenih aktivnosti. Kroz razvoj aplikacije željeli smo stvoriti jednostavno rješenje koje digitalizira ključne procese – od planiranja sastanaka do pohrane zaključaka – te osigurava veću transparentnost i bolju suradnju među korisnicima. Tijekom izrade projekta naučili smo primjenjivati principe timskog rada, koristiti moderne alate za razvoj web-sustava i razumjeti važnost povezivanja tehničkih rješenja s realnim potrebama korisnika.
 
-Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije »Zato što je to bio zadatak i nismo imali ideje za drugo.«). Koji problem rješavate?
-> Obzirom da je ovo zadani projekt navedite i što želite/jeste novo  naučili.
-
-> Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
-
 # Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
 
 Aplikacija StanPlan uključuje niz funkcionalnosti osmišljenih za digitalno upravljanje procesima u stambenim zgradama i olakšavanje komunikacije među suvlasnicima.
 Funkcionalnosti visokog prioriteta obuhvaćaju prijavu korisnika prema ulozi (F-001), kreiranje i upravljanje sastancima (F-002), te administrativno upravljanje korisničkim računima (F-013, F-014). Predstavnik suvlasnika može dodavati točke dnevnog reda i objavljivati sastanke (F-003, F-004, F-005), dok sustav automatski obavještava korisnike o promjenama statusa sastanka (F-010). Administrator ima mogućnost upravljanja korisnicima i konfiguracije integracije sa sustavom StanBlog (F-016, F-019).
@@ -39,7 +25,6 @@ Aplikacija je implementirana i javno dostupna na domeni: https://programsko-inze
 
 
 # Članovi tima 
-> Popis članova tima/linkovi/ glavni doprinos<br>
 
 Jakov Jauk - backend <br>
 Borna Matković  frontend <br>
