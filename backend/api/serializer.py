@@ -66,6 +66,7 @@ class RegisterSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
+        from django.utils import timezone
         password = validated_data.pop('password')
         password_hash = hash_password(password)
 
@@ -74,6 +75,7 @@ class RegisterSerializer(serializers.Serializer):
             email=validated_data['email'],
             password_hash=password_hash,
             id_uloge_id=validated_data.get('id_uloge', 3),
-            aktivan=True
+            aktivan=True,
+            registriran_od=timezone.now()
         )
         return korisnik
