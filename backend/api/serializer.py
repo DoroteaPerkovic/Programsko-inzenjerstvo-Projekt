@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Korisnik, Uloga, Sastanak, StatusSastanka,
-    Obavijesti, Sudjeluje, TockeDnevReda, Rasprava, Zakljucak
+    Korisnik, Uloga
 )
 from .auth_backend import hash_password
 
@@ -78,67 +77,3 @@ class RegisterSerializer(serializers.Serializer):
             aktivan=True
         )
         return korisnik
-
-
-class StatusSastankaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StatusSastanka
-        fields = ['id_status', 'naziv_status']
-
-
-class SastanakSerializer(serializers.ModelSerializer):
-    organizator = KorisnikSerializer(source='id_korisnik', read_only=True)
-    status = StatusSastankaSerializer(source='id_status', read_only=True)
-
-    class Meta:
-        model = Sastanak
-        fields = ['id_sastanak', 'naslov', 'napravljen_od', 'lokacija',
-                  'datum_vrijeme', 'sazetak', 'id_korisnik', 'id_status',
-                  'organizator', 'status']
-        read_only_fields = ['id_sastanak', 'napravljen_od']
-
-
-class ObavijestiSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Obavijesti
-        fields = ['id_obavijesti', 'poruka', 'poslano_u', 'status_mail', 'id_sastanak']
-        read_only_fields = ['id_obavijesti']
-
-
-class SudjelujeSerializer(serializers.ModelSerializer):
-    korisnik = KorisnikSerializer(source='id_korisnik', read_only=True)
-    sastanak = SastanakSerializer(source='id_sastanak', read_only=True)
-
-    class Meta:
-        model = Sudjeluje
-        fields = ['id_sudjelovanja', 'vrijeme_potvrde', 'potvrda',
-                  'id_korisnik', 'id_sastanak', 'korisnik', 'sastanak']
-        read_only_fields = ['id_sudjelovanja']
-
-
-class TockeDnevRedaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TockeDnevReda
-        fields = ['id_tocke', 'broj_tocke', 'naziv', 'opis',
-                  'pravni_ucinak', 'id_sastanak']
-        read_only_fields = ['id_tocke']
-
-
-class RaspravaSerializer(serializers.ModelSerializer):
-    tocka = TockeDnevRedaSerializer(source='id_tocke', read_only=True)
-
-    class Meta:
-        model = Rasprava
-        fields = ['id_rasprave', 'url_stanblog', 'id_tocke', 'tocka']
-        read_only_fields = ['id_rasprave']
-
-
-class ZakljucakSerializer(serializers.ModelSerializer):
-    autor = KorisnikSerializer(source='id_korisnik', read_only=True)
-    tocka = TockeDnevRedaSerializer(source='id_tocke', read_only=True)
-
-    class Meta:
-        model = Zakljucak
-        fields = ['id_zakljucak', 'tekst', 'status', 'unesen_u',
-                  'id_korisnik', 'id_tocke', 'autor', 'tocka']
-        read_only_fields = ['id_zakljucak', 'unesen_u']

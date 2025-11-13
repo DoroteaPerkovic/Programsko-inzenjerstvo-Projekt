@@ -1,56 +1,15 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
-from django.contrib.auth import authenticate
-from .models import (
-    Korisnik, Uloga, Sastanak, StatusSastanka,
-    Obavijesti, Sudjeluje, TockeDnevReda, Rasprava, Zakljucak
-)
-from .serializer import (
-    RegisterSerializer, KorisnikSerializer, UlogaSerializer,
-    SastanakSerializer, StatusSastankaSerializer, ObavijestiSerializer,
-    SudjelujeSerializer, TockeDnevRedaSerializer, RaspravaSerializer,
-    ZakljucakSerializer
-)
-from .auth_backend import hash_password, verify_password
+from rest_framework import status
+from .models import Korisnik
+from .serializer import RegisterSerializer
+from .auth_backend import verify_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def list_users(request):
-    """List all users - only for admins"""
-    korisnik = request.user
-    if not isinstance(korisnik, Korisnik) or not korisnik.is_admin():
-        return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
-
-    korisnici = Korisnik.objects.all()
-    serializer = KorisnikSerializer(korisnici, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def change_password(request):
-    """Change password for authenticated user"""
-    korisnik = request.user
-    old_password = request.data.get('old_password')
-    new_password = request.data.get('new_password')
-
-    if not old_password or not new_password:
-        return Response({'error': 'Stara i nova lozinka su obavezne'}, status=status.HTTP_400_BAD_REQUEST)
-
-    if not verify_password(old_password, korisnik.password_hash):
-        return Response({'error': 'Stara lozinka nije ispravna'}, status=status.HTTP_400_BAD_REQUEST)
-
-    korisnik.password_hash = hash_password(new_password)
-    korisnik.save()
-    return Response({'message': 'Lozinka promijenjena'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -111,14 +70,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Add custom claims
         if isinstance(user, Korisnik):
             token['email'] = user.email
             token['role'] = user.get_role()
         return token
 
     def validate(self, attrs):
-        # Support login with username or email
         username_or_email = attrs.get(self.username_field, '')
         password = attrs.get('password', '')
 
@@ -152,58 +109,3 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
-
-class KorisnikViewSet(viewsets.ModelViewSet):
-    queryset = Korisnik.objects.all()
-    serializer_class = KorisnikSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        """Only admins can see all users, others can only see themselves"""
-        if self.request.user.is_admin():
-            return Korisnik.objects.all()
-        return Korisnik.objects.filter(id_korisnik=self.request.user.id_korisnik)
-
-
-class SastanakViewSet(viewsets.ModelViewSet):
-    queryset = Sastanak.objects.all()
-    serializer_class = SastanakSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(id_korisnik=self.request.user)
-
-
-class ObavijestiViewSet(viewsets.ModelViewSet):
-    queryset = Obavijesti.objects.all()
-    serializer_class = ObavijestiSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class SudjelujeViewSet(viewsets.ModelViewSet):
-    queryset = Sudjeluje.objects.all()
-    serializer_class = SudjelujeSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class TockeDnevRedaViewSet(viewsets.ModelViewSet):
-    queryset = TockeDnevReda.objects.all()
-    serializer_class = TockeDnevRedaSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class RaspravaViewSet(viewsets.ModelViewSet):
-    queryset = Rasprava.objects.all()
-    serializer_class = RaspravaSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class ZakljucakViewSet(viewsets.ModelViewSet):
-    queryset = Zakljucak.objects.all()
-    serializer_class = ZakljucakSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        """Set the author to the current user"""
-        serializer.save(id_korisnik=self.request.user)
