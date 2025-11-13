@@ -140,6 +140,49 @@ body{
   color: white;
 }
 
+/* poruka uspjesnosti dodavanja korisnika */
+/* ---------------- Toast poruke ---------------- */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* centriranje */
+  background: #4caf50;
+  color: white;
+  padding: 20px 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+  font-size: 1.1rem; /* malo veći tekst */
+  text-align: center;
+  animation: fadeInOut 6s ease forwards; /* 6 sekundi prikaza */
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 80%;
+}
+
+.toast.error {
+  background: #e74c3c;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+}
+
+
+
 /*tablet*/
 @media (max-width: 1024px) {
   .Blok {

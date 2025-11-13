@@ -8,9 +8,9 @@ import filter from '../assets/Filter.png'
 function Header({ userRole, onSelectcategory }) {
     const [showMenu, setShowMenu] = useState(false);
     const menuItems = {
-        predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
+        predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani"],
         suvlasnik: ["Objavljeni", "Arhivirani"],
-        admin: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
+        admin: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani"]
     };
     const itemsToShow = menuItems[userRole] || [];
     return (

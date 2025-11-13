@@ -10,6 +10,10 @@ function UserAdd() {
     id_uloge: 3,
   });
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
   const handleChange = e => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -34,16 +38,20 @@ function UserAdd() {
     }
 
     if (res.ok) {
-      alert('Korisnik uspješno dodan!');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
       setForm({ korisnicko_ime: '', email: '', password: '', id_uloge: 3 });
     } else {
-      const errorMsg = res.data.korisnicko_ime?.[0] || res.data.email?.[0] || res.data.error || JSON.stringify(res.data);
-      alert('Greška: ' + errorMsg);
+      setErrorMsg(res.data.korisnicko_ime?.[0] || res.data.email?.[0] || res.data.error || JSON.stringify(res.data));
+      setShowError(true);
+      setTimeout(() => setShowError(false), 5000);
     }
   };
 
   return (
     <div className="Kontenjer">
+      {showSuccess && <div className="toast success">Korisnik uspješno dodan!</div>}
+      {showError && <div className="toast error">{errorMsg}</div>}
       <div className="Blok">
         <div className="ZaglavljeBloka">NOVI KORISNIK</div>
         <div className ="TijeloBloka">
