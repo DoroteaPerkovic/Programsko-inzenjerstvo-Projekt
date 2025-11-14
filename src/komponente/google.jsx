@@ -12,7 +12,7 @@ function GoogleLoginButton() {
     onSuccess: async (credentialResponse) => {
         console.log('Google token (credential):', credentialResponse);
       try {
-        const response = await axios.post('http://localhost:8000/api/google-auth/', {
+        const response = await axios.post('https://programsko-inzenjerstvo-projekt-ll9v.onrender.com/api/google-auth/', {
             access_token: credentialResponse.access_token,
         });
         localStorage.setItem('access', response.data.access);
