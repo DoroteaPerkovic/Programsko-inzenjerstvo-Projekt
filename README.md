@@ -21,8 +21,8 @@ Osnovne tehnologije uključuju HTTP/HTTPS za sigurnu komunikaciju i RESTful API-
 
 # Instalcija  
 
-Aplikacija je implementirana i javno dostupna na domeni: https://programsko-inzenjerstvo-projekt-1.onrender.com
-
+Aplikacija je implementirana i javno dostupna na domeni: https://programsko-inzenjerstvo-projekt-1.onrender.com  
+Administrator (korisnicko ime: nexify, lozinka: p09-nexify)
 
 # Članovi tima 
 
