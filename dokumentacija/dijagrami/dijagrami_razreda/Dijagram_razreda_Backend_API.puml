@@ -1,0 +1,153 @@
+@startuml Dijagram_razreda_Backend_API
+!theme plain
+
+skinparam package {
+    BackgroundColor LightBlue
+}
+
+skinparam class {
+    BackgroundColor<<Serializer>> LightPurple
+    BorderColor<<Serializer>> Purple
+}
+
+skinparam class {
+    BackgroundColor<<Controller>> LightBlue
+    BorderColor<<Controller>> Blue
+}
+
+skinparam class {
+    BackgroundColor<<Backend>> LightGray
+    BorderColor<<Backend>> Gray
+}
+
+skinparam class {
+    BackgroundColor<<Utility>> LightCyan
+    BorderColor<<Utility>> DarkCyan
+}
+
+skinparam class {
+    BackgroundColor<<Entity>> LightYellow
+    BorderColor<<Entity>> Black
+}
+
+package "Serializers" {
+  class KorisnikSerializer <<Serializer>> {
+    +create(validated_data: Dict) : Korisnik
+    +update(attrs: Dict) : Dict
+    +update(instance: Korisnik, validated_data: Dict) : Korisnik
+  }
+
+  class SastanakSerializer <<Serializer>> {
+    +to_representation(instance: Sastanak) : Dict
+    +create(validated_data: Dict) : Sastanak
+    +validate(attrs: Dict) : Dict
+  }
+
+  class TockeDnevRedaSerializer <<Serializer>> {
+    +validate(attrs: Dict) : Dict
+    +create(validated_data: Dict) : TockeDnevReda
+  }
+
+  class CustomTokenSerializer <<Serializer>> {
+    +get_token(user: Korisnik) : Token
+    +validate(attrs: Dict) : Dict
+  }
+}
+
+package "Controllers (Views)" {
+  class AuthController <<Controller>> {
+    +login(request) : Response
+    +logout(request) : Response
+    +google_auth(request) : Response
+    +token_refresh(request) : Response
+  }
+
+  class KorisnikController <<Controller>> {
+    +list_users(request) : Response
+    +create_user(request) : Response
+    +update_user(request, id: Integer) : Response
+    +delete_user(request, id: Integer) : Response
+    +change_password(request) : Response
+  }
+
+  class SastanakController <<Controller>> {
+    +list_sastanci(request) : Response
+    +get_sastanak(request, sastanak_id: Integer) : Response
+    +create_sastanak(request) : Response
+    +update_sastanak(request, sastanak_id: Integer) : Response
+    +delete_sastanak(request, sastanak_id: Integer) : Response
+    +potvrdi_sudjelovanje(request, id: Integer) : Response
+  }
+
+  class TockeDnevRedaController <<Controller>> {
+    +list_tocke(request, sastanak_id: Integer) : Response
+    +create_tocka(request, sastanak_id: Integer) : Response
+    +update_tocka(request, id: Integer) : Response
+    +delete_tocka(request, id: Integer) : Response
+  }
+}
+
+package "Authentication Backend" {
+  class KorisnikAuthBackend <<Backend>> {
+    +authenticate(request: Request, username: String, password: String) : Korisnik
+    +get_user(user_id: Integer) : Korisnik
+  }
+
+  class AuthUtils <<Utility>> {
+    +hash_password(password: String) : String
+    +verify_password(password: String, password_hash: String) : Boolean
+  }
+}
+
+package "Model Layer" {
+  class Sastanak <<Entity>> {
+    -id_sastanak : Integer
+    -naslov : String
+    -datum_vrijeme : Timestamp
+    -lokacija : String
+  }
+
+  class TockeDnevReda <<Entity>> {
+    -id_tocke : Integer
+    -naziv : String
+    -pravni_ucinak : Boolean
+  }
+
+  class Sudjeluje <<Entity>> {
+    -id_sudjelovanja : Integer
+    -potvrda : Boolean
+  }
+
+  class Korisnik <<Entity>> {
+    -id_korisnik : Integer
+    -korisnicko_ime : String
+    -email : String
+    -password_hash : String
+  }
+}
+
+KorisnikSerializer "1" --> "1" Korisnik : serializes
+SastanakSerializer "1" --> "1" Sastanak : serializes
+TockeDnevRedaSerializer "1" --> "1" TockeDnevReda : serializes
+CustomTokenSerializer "1" --> "1" Korisnik : authenticates
+
+AuthController "1" --> "1" CustomTokenSerializer : uses
+KorisnikController "1" --> "1" KorisnikSerializer : uses
+SastanakController "1" --> "1" SastanakSerializer : uses
+TockeDnevRedaController "1" --> "1" TockeDnevRedaSerializer : uses
+
+KorisnikController "1" --> "0..*" Korisnik : manages
+SastanakController "1" --> "0..*" Sastanak : manages
+TockeDnevRedaController "1" --> "0..*" TockeDnevReda : manages
+
+KorisnikAuthBackend "1" --> "0..*" Korisnik : authenticates
+KorisnikAuthBackend "1" --> "1" AuthUtils : uses
+AuthUtils ..> "bcrypt" : library
+
+note top of AuthController : Odgovoran za autentifikaciju\nkorisnika (klasična i Google OAuth)\ni upravljanje JWT tokena
+
+note left of KorisnikAuthBackend : Prilagođeni backend za autentifikaciju\nkorisnika na temelju username/email\ni bcrypt hash provjere
+
+note bottom of AuthUtils : Utility funkcije za sigurno\nhaširanje i verifikaciju lozinki\nkoristeći bcrypt algoritam
+
+@enduml
