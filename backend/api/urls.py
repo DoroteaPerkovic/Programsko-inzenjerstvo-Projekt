@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import create_user_by_admin, google_auth, CustomTokenObtainPairView
+from .views import create_user_by_admin, CustomTokenObtainPairView, google_auth
+
 
 urlpatterns = [
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),

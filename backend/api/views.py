@@ -1,3 +1,4 @@
+import requests
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -6,11 +7,8 @@ from .models import Korisnik
 from .serializer import RegisterSerializer
 from .auth_backend import verify_password
 from rest_framework_simplejwt.tokens import RefreshToken
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -32,37 +30,45 @@ def create_user_by_admin(request):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-GOOGLE_CLIENT_ID = '826648226919-fpclgpuee5fhdrdb6mas7fevhkkjq2lr.apps.googleusercontent.com'  
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def google_auth(request):
-    """Authenticate user via Google OAuth"""
-    token = request.data.get('token')
-    if not token:
+    access_token = request.data.get('access_token')
+    if not access_token:
         return Response({'error': 'No token provided'}, status=400)
 
+    userinfo_response = requests.get(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        headers={'Authorization': f'Bearer {access_token}'}
+    )
+
+    if userinfo_response.status_code != 200:
+        return Response({'error': 'Failed to fetch user info from Google'}, status=400)
+
+    userinfo = userinfo_response.json()
+    email = userinfo.get('email')
+
+    if not email:
+        return Response({'error': 'Email not found in Google response'}, status=400)
+
     try:
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), GOOGLE_CLIENT_ID)
-        email = idinfo.get('email')
+        korisnik = Korisnik.objects.get(email=email, aktivan=True)
+    except Korisnik.DoesNotExist:
+        return Response({'error': 'Nemate pristup ovoj aplikaciji. Kontaktirajte administratora.'}, status=403)
 
-        try:
-            korisnik = Korisnik.objects.get(email=email, aktivan=True)
-        except Korisnik.DoesNotExist:
-            return Response({'error': 'Nemate pristup ovoj aplikaciji.'}, status=403)
+    refresh = RefreshToken.for_user(korisnik)
 
-        refresh = RefreshToken.for_user(korisnik)
-
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+    return Response({
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+        'user': {
             'username': korisnik.korisnicko_ime,
             'email': korisnik.email,
             'role': korisnik.get_role()
-        })
-    except ValueError:
-        return Response({'error': 'Invalid token'}, status=400)
+        },
+        'userRole': korisnik.get_role()
+    })
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'username'
