@@ -1,0 +1,133 @@
+@startuml Dijagram_razreda_Baza_podataka
+!theme plain
+
+' Entity styling
+skinparam class {
+    BackgroundColor<<Entity>> LightYellow
+    BorderColor<<Entity>> Black
+}
+
+skinparam class {
+    BackgroundColor<<Enum>> LightGreen
+    BorderColor<<Enum>> Black
+}
+
+class Sudjeluje <<Entity>> {
+  -id_sudjelovanja : Integer
+  -vrijeme_potvrde : Timestamp
+  -potvrda : Boolean
+  -id_korisnik : Integer
+  -id_sastanak : Integer
+  --
+  +potvrdi_dolazak() : void
+  +odustani_dolazak() : void
+}
+
+class Sastanak <<Entity>> {
+  -id_sastanak : Integer
+  -naslov : String
+  -napravljen_od : Timestamp
+  -lokacija : String
+  -datum_vrijeme : Timestamp
+  -sažetak : String
+  -id_korisnik : Integer
+  -id_status : Integer
+  --
+  +get_točke() : List<TočkeDnevnogReda>
+  +get_sudionike() : List<Korisnik>
+  +pozovi_obavijesti() : void
+}
+
+class StatusSastanka <<Enum>> {
+  PLANIRAN
+  OBJAVLJEN
+  NEPOSLAN
+  ARHIVIRAN
+  --
+  +__str__() : String
+}
+
+class Korisnik <<Entity>> {
+  -id_korisnik : Integer
+  -korisničko_ime : String
+  -email : String
+  -aktivan : Boolean
+  -registriran_od : Timestamp
+  -password_hash : String
+  -id_uloge : Integer
+  --
+  +provjeri_lozinku(password: String) : Boolean
+  +postavi_lozinku(password: String) : void
+  +is_active() : Boolean
+  +get_role() : Uloga
+}
+
+class Uloga <<Enum>> {
+  ADMIN
+  PREDSTAVNIK
+  SUVLASNIK
+  --
+  +__str__() : String
+}
+
+class TočkeDnevnogReda <<Entity>> {
+  -id_točke : Integer
+  -broj_točke : Integer
+  -naziv : String
+  -opis : String
+  -pravni_učinak : Boolean
+  -id_sastanak : Integer
+  --
+  +dodaj_raspravu(Zaključak) : void
+  +zaključci() : List<Zaključak>
+}
+
+class Obavijesti <<Entity>> {
+  -id_obavijesti : Integer
+  -poruka : String
+  -poslano_u : Timestamp
+  -status_mail : String
+  -id_sastanak : Integer
+  --
+  +proslijedi() : Boolean
+  +str() : String
+}
+
+class Rasprava <<Entity>> {
+  -id_rasprave : Integer
+  -url_stanblog : String
+  -id_točke : Integer
+  --
+  +get_url() : String
+  +provjeri_tekstualnu_raspravu() : String
+  +promijeni_status() : String
+  +get_autor() : Korisnik
+}
+
+class Zaključak <<Entity>> {
+  -id_zaključak : Integer
+  -tekst : String
+  -status : String
+  -unesen_u : Timestamp
+  -id_korisnik : Integer
+  -id_točke : Integer
+  --
+  +predaj_tekstualni_zaključak() : String  
+  +promijeni_status() : String
+  +get_autor() : Korisnik
+}
+
+Uloga "1" ||--o{ "0..*" Korisnik : ima
+StatusSastanka "1" ||--o{ "0..*" Sastanak : ima
+Korisnik "1" ||--o{ "0..*" Sastanak : kreira
+Sastanak "1" ||--o{ "0..*" Obavijesti : za
+Sudjeluje "0..*" }o--|| "1" Korisnik : korisnik
+Sudjeluje "0..*" }o--|| "1" Sastanak : sastanak
+Sastanak "1" ||--o{ "0..*" TočkeDnevnogReda : sadrži
+TočkeDnevnogReda "1" ||--o{ "0..*" Rasprava : ima
+TočkeDnevnogReda "1" ||--o{ "0..*" Zaključak : ima
+Korisnik "1" ||--o{ "0..*" Zaključak : unosi
+
+note top of Sudjeluje : Centralni entitet koji povezuje\nsve ostale entitete vezane za\norganizaciju i praćenje zaključaka
+
+@enduml
