@@ -3,6 +3,7 @@ import profilePic from '../assets/pfp.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginWithUsernameAndPassword } from '../services/LoginService'
+import GoogleLoginButton from '../komponente/google'
 
 function Login() {
     const [usernameOrEmail, setUsernameOrEmail] = useState('')
@@ -71,6 +72,8 @@ function Login() {
                 <br />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <button type="submit">Prijava</button>
+                <br />
+                <GoogleLoginButton setError={setError}/>
             </form>
         </div>
     );
