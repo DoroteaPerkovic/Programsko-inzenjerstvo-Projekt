@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ju4#4dqm1timlw(kg4*#8om==3e3-8d9mi!_qh_4&hr^+exo78
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,7 +79,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "https://programsko-inzenjerstvo-projekt-1.onrender.com",
 ]
 
 REST_FRAMEWORK = {
