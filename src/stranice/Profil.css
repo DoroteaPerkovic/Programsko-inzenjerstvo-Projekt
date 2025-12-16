@@ -1,0 +1,75 @@
+.password-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 402px;
+    background-color: white;
+    padding: 15px;
+    color: rgb(55, 52, 53);
+}
+
+.blockProfila{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    background-color: rgb(40, 189, 214);
+    margin-top: 50px;
+    height: 60vh;
+    width: 70VW
+}
+
+.podatci {
+  width: 420px;
+  padding: 24px 28px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.naslov1 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: rgb(55, 52, 53);;
+  text-align: center;
+}
+
+.podElm {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #444;
+  border-bottom: 1px solid #eee;
+}
+
+.podElm i {
+  font-style: italic;
+  font-weight: 500;
+  color: #666;
+}
+
+.podElm span {
+  font-weight: 600;
+  color: #111;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+
+.unosLozinke {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.unosLozinke label {
+    text-align: start;
+}
+
+.unosLozinke input {
+    width: 10vw;
+}
