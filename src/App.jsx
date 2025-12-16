@@ -3,6 +3,7 @@ import Login from './stranice/Login'
 import Admin from './stranice/Admin'
 import Predstavnik from './stranice/Predstavnik'
 import Suvlasnici from './stranice/Suvlasnici'
+import SastanakAdd from './stranice/sastanakAdd'
 
 function App() {
   return (
@@ -13,9 +14,10 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/predstavnik" element={<Predstavnik />} />
         <Route path="/suvlasnici" element={<Suvlasnici />} />
+        <Route path="/sastanakAdd" element={<SastanakAdd />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Router>   
+    </Router>
   )
 }
 
