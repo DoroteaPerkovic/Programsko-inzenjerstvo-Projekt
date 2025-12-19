@@ -16,7 +16,7 @@ function Header({ onSelectcategory }) {
     const menuItems = {
         "Predstavnik suvlasnika": ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
         "Suvlasnik": ["Objavljeni", "Arhivirani"],
-        "Administrator": ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
+        "Administrator": ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak", "Dodavanje korisnika"]
     };
     const itemsToShow = menuItems[userRole] || [];
     return (
@@ -40,6 +40,10 @@ function Header({ onSelectcategory }) {
                                             onClick={() => {
                                                 if (item === "Novi sastanak") {
                                                     navigate('/sastanakAdd');
+                                                    return;
+                                                }
+                                                if (item === "Dodavanje korisnika") {
+                                                    navigate('/admin');
                                                     return;
                                                 }
                                                 onSelectcategory && onSelectcategory(item);
