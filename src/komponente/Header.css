@@ -30,6 +30,7 @@
     max-height: 90%;
     padding-top: 1vh;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .filter {

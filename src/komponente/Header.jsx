@@ -4,6 +4,7 @@ import './Header.css'
 import logo from '../assets/STAN.png'
 import profile from '../assets/profile.png'
 import filter from '../assets/Filter.png'
+import { Link } from 'react-router-dom';
 
 
 function Header({ userRole, onSelectcategory }) {
@@ -49,7 +50,9 @@ function Header({ userRole, onSelectcategory }) {
                         )}
                     </div>
                     <div className="desno3">
-                        <img className="profile" src={profile} alt="Profile" />
+                        <Link to ="/profil">
+                            <img className="profile" src={profile} alt="Profile" />
+                        </Link>
                     </div>
                 </div>
             </div>

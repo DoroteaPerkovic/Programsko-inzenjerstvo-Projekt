@@ -4,6 +4,7 @@ import Admin from './stranice/Admin'
 import Predstavnik from './stranice/Predstavnik'
 import Suvlasnici from './stranice/Suvlasnici'
 import SastanakAdd from './stranice/sastanakAdd'
+import Profil from './stranice/Profil'
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path="/suvlasnici" element={<Suvlasnici />} />
         <Route path="/sastanakAdd" element={<SastanakAdd />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/profil" element={<Profil />} />
+
       </Routes>
     </Router>
   )
