@@ -3,8 +3,8 @@ import Login from './stranice/Login'
 import Admin from './stranice/Admin'
 import Predstavnik from './stranice/Predstavnik'
 import Suvlasnici from './stranice/Suvlasnici'
-import Profil from './stranice/Profil'
 import SastanakAdd from './stranice/sastanakAdd'
+import Profil from './stranice/Profil'
 
 function App() {
   return (
