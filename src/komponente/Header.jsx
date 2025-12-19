@@ -38,11 +38,16 @@ function Header({ onSelectcategory }) {
                                         <li
                                             key={item}
                                             onClick={() => {
-                                                if (item === "Novi sastanak") {
+                                                if (item === "Planirani" || item === "Objavljeni" ||
+                                                    item ==="Obavljeni" || item ==="Arhivirani") {
+                                                    navigate('/suvlasnici');
+                                                    return;
+                                                }
+                                                else if (item === "Novi sastanak") {
                                                     navigate('/sastanakAdd');
                                                     return;
                                                 }
-                                                if (item === "Dodavanje korisnika") {
+                                                else if (item === "Dodavanje korisnika") {
                                                     navigate('/admin');
                                                     return;
                                                 }
