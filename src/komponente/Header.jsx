@@ -5,15 +5,18 @@ import logo from '../assets/STAN.png'
 import profile from '../assets/profile.png'
 import filter from '../assets/Filter.png'
 import { Link } from 'react-router-dom';
+ 
 
-
-function Header({ userRole, onSelectcategory }) {
+function Header({ onSelectcategory }) {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
+
+    const userRole = localStorage.getItem('userRole');
+
     const menuItems = {
-        predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
-        suvlasnik: ["Objavljeni", "Arhivirani"],
-        admin: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
+        Predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
+        Suvlasnik: ["Objavljeni", "Arhivirani"],
+        Administrator: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
     };
     const itemsToShow = menuItems[userRole] || [];
     return (
