@@ -1,5 +1,5 @@
 .dodavanjeOkvir {
-    max-width: 720px;
+    width: 540px;
     margin: 40px auto;
     padding: 24px;
     background: #ffffff;
@@ -23,7 +23,7 @@
 
 .formaDodaj {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 14px;
 }
 
@@ -88,3 +88,94 @@
     font-size: 14px;
     margin-top: 6px;
 }
+
+.lijevo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.tdr{
+    width: 25vw;
+    font-size: 20px;
+    color: #1f2933;
+}
+
+.tockaReda {
+    display: flex;
+    align-items: center;
+}
+
+.tockaReda input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.tockaReda button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tockaReda button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tockaReda button:not(:disabled):hover {
+    background: #fecaca;
+}
+
+.lijevo > button[type="button"] {
+    align-self: flex-start;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px dashed #2563eb;
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.lijevo > button[type="button"]:hover {
+    background: #dbeafe;
+}
+
+.tdrContainer {
+    height:  320px;
+    width: 270px; 
+    overflow-y: auto;  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;         
+    padding-right: 4px; 
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.tdrContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tdrContainer::-webkit-scrollbar-thumb {
+    background-color: #2563eb;
+    border-radius: 3px;
+}
+
