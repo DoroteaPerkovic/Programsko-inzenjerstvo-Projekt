@@ -14,9 +14,9 @@ function Header({ onSelectcategory }) {
     const userRole = localStorage.getItem('userRole');
 
     const menuItems = {
-        Predstavnik: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
-        Suvlasnik: ["Objavljeni", "Arhivirani"],
-        Administrator: ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
+        "Predstavnik suvlasnika": ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"],
+        "Suvlasnik": ["Objavljeni", "Arhivirani"],
+        "Administrator": ["Planirani", "Objavljeni", "Obavljeni", "Arhivirani", "Novi sastanak"]
     };
     const itemsToShow = menuItems[userRole] || [];
     return (
