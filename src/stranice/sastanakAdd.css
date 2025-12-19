@@ -1,0 +1,181 @@
+.dodavanjeOkvir {
+    width: 540px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e6ea;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.dodavanjeOkvir h1 {
+    margin: 0 0 12px;
+    font-size: 28px;
+    color: #1f2933;
+}
+
+.hint {
+    margin: 0 0 16px;
+    color: #52606d;
+    font-size: 14px;
+}
+
+.formaDodaj {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+}
+
+.formaDodaj label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    color: #1f2933;
+}
+
+.formaDodaj input,
+.formaDodaj textarea,
+.formaDodaj select {
+    padding: 10px 12px;
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1f2933;
+    background: #f8fafc;
+}
+
+.formaDodaj textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.actions button {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.actions button[type="submit"] {
+    background: #2563eb;
+    color: white;
+}
+
+.actions button[type="button"] {
+    background: #e5e7eb;
+    color: #1f2933;
+}
+
+.error {
+    color: #b91c1c;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.lijevo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.tdr{
+    width: 25vw;
+    font-size: 20px;
+    color: #1f2933;
+}
+
+.tockaReda {
+    display: flex;
+    align-items: center;
+}
+
+.tockaReda input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.tockaReda button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tockaReda button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tockaReda button:not(:disabled):hover {
+    background: #fecaca;
+}
+
+.lijevo > button[type="button"] {
+    align-self: flex-start;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px dashed #2563eb;
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.lijevo > button[type="button"]:hover {
+    background: #dbeafe;
+}
+
+.tdrContainer {
+    height:  320px;
+    width: 270px; 
+    overflow-y: auto;  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;         
+    padding-right: 4px; 
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.tdrContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tdrContainer::-webkit-scrollbar-thumb {
+    background-color: #2563eb;
+    border-radius: 3px;
+}
+

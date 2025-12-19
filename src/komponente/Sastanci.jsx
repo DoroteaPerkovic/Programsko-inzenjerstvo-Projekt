@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Sastanci.css'
 
 const sastanciData = [
@@ -74,20 +74,31 @@ const sastanciData = [
 
 function Sastanci({ category, userRole }) {
     const [potvrde, setPotvrde] = useState({});
+    const [sastanci, setSastanci] = useState(sastanciData);
+
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem('customSastanci') || '[]');
+        if (Array.isArray(saved) && saved.length > 0) {
+            setSastanci([...sastanciData, ...saved]);
+        }
+    }, []);
 
     const handleCheckboxChange = (id, checked) => {
-        setPotvrde(prev => ({
-            ...prev,
-            [id]: checked ? (prev[id] || sastanciData.find(s => s.id === id).brojPotvrdjenihSudjelovanja) + 1
-                : (prev[id] || sastanciData.find(s => s.id === id).brojPotvrdjenihSudjelovanja) - 1
-        }));
+        setPotvrde(prev => {
+            const current = sastanci.find(s => s.id === id);
+            const base = prev[id] ?? current?.brojPotvrdjenihSudjelovanja ?? 0;
+            return {
+                ...prev,
+                [id]: checked ? base + 1 : base - 1,
+            };
+        });
     };
 
     return (
-        <div className ="tijelo">
+        <div className="tijelo">
             <h1 className='Naslov'> {category ? `${category} sastanci:` : 'Sastanci:'} </h1>
             <div className='okvirAS'>
-                {sastanciData
+                {sastanci
                     .filter(sastanak => {
                         if (category === "Planirani") return sastanak.stanje === "Planiran";
                         if (category === "Objavljeni") return sastanak.stanje === "Objavljen";
@@ -95,7 +106,7 @@ function Sastanci({ category, userRole }) {
                         if (category === "Arhivirani") return sastanak.stanje === "Arhiviran";
                         return true;
                     })
- 
+
                     .map((sastanak) => (
                         <div key={sastanak.id} className='sastanakAS'>
                             <div className={`naslovAS ${sastanak.stanje.toLowerCase()}`}>

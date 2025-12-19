@@ -140,22 +140,21 @@ body{
   color: white;
 }
 
-/* poruka uspjesnosti dodavanja korisnika */
-/* ---------------- Toast poruke ---------------- */
+
 .toast {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* centriranje */
+  transform: translate(-50%, -50%); 
   background: #4caf50;
   color: white;
   padding: 20px 28px;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   font-weight: 600;
-  font-size: 1.1rem; /* malo veći tekst */
+  font-size: 1.1rem; 
   text-align: center;
-  animation: fadeInOut 6s ease forwards; /* 6 sekundi prikaza */
+  animation: fadeInOut 6s ease forwards; 
   z-index: 1000;
   min-width: 280px;
   max-width: 80%;
