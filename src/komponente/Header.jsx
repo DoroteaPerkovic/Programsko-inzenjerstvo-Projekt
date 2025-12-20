@@ -32,14 +32,20 @@ function Header({ onSelectcategory }) {
   };
   const itemsToShow = menuItems[userRole] || [];
 
-  const goToMeetingsPage = () => {
+  const handleCategoryClick = (item) => {
+    const categoryMap = {
+      Planirani: "planirani",
+      Objavljeni: "objavljeni",
+      Obavljeni: "obavljeni",
+      Arhivirani: "arhivirani",
+    };
+
+    const categoryUrl = categoryMap[item];
+
     if (userRole === "Suvlasnik") {
-      navigate("/suvlasnici");
-    } else if (
-      userRole === "Predstavnik suvlasnika" ||
-      userRole === "Administrator"
-    ) {
-      navigate("/predstavnik");
+      navigate(`/suvlasnici/${categoryUrl}`);
+    } else {
+      navigate(`/predstavnik/${categoryUrl}`);
     }
   };
 
@@ -65,12 +71,14 @@ function Header({ onSelectcategory }) {
                       key={item}
                       onClick={() => {
                         if (
-                          item === "Planirani" ||
-                          item === "Objavljeni" ||
-                          item === "Obavljeni" ||
-                          item === "Arhivirani"
+                          [
+                            "Planirani",
+                            "Objavljeni",
+                            "Obavljeni",
+                            "Arhivirani",
+                          ].includes(item)
                         ) {
-                          goToMeetingsPage();
+                          handleCategoryClick(item);
                           return;
                         }
 

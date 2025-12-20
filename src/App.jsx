@@ -13,8 +13,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/predstavnik" element={<Predstavnik />} />
-        <Route path="/suvlasnici" element={<Suvlasnici />} />
+        <Route path="/predstavnik/:category" element={<Predstavnik />} />
+        <Route path="/suvlasnici/:category" element={<Suvlasnici />} />
         <Route path="/sastanakAdd" element={<SastanakAdd />} />
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/profil" element={<Profil />} />

@@ -1,17 +1,26 @@
+import { useState } from "react";
+import Sastanci from "../komponente/Sastanci.jsx";
+import Header from "../komponente/Header.jsx";
 
-import { useState } from 'react';
-import Sastanci from '../komponente/Sastanci.jsx'
-import Header from '../komponente/Header.jsx';
+import { useParams } from "react-router-dom";
 
-function App(){
-  const [selectedCategory, setselectedCategory] = useState("Objavljeni");
-  return(
+const categoryMap = {
+  planirani: "Planirani",
+  objavljeni: "Objavljeni",
+  obavljeni: "Obavljeni",
+  arhivirani: "Arhivirani",
+};
+
+function App() {
+  const { category } = useParams();
+  const selectedCategory = categoryMap[category] || "Objavljeni";
+
+  return (
     <>
-    <Header userRole="predstavnik" onSelectcategory={setselectedCategory}/>
-    <Sastanci category = {selectedCategory} userRole="predstavnik"/>
+      <Header userRole="predstavnik" onSelectcategory={setselectedCategory} />
+      <Sastanci category={selectedCategory} userRole="Predstavnik suvlasnika" />
     </>
   );
-
 }
 
-export default App 
+export default App;
