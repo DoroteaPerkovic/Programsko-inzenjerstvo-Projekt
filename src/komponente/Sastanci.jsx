@@ -138,7 +138,7 @@ function Sastanci({ category, userRole }) {
                                 <p className='psAS'>{potvrde[sastanak.id] ?? sastanak.brojPotvrdjenihSudjelovanja}</p>
                                 <p className='kontrolaVisine '></p>
                             </div>
-                            {sastanak.stanje === "Objavljen" && userRole === "suvlasnik" && (
+                            {sastanak.stanje === "Objavljen" && userRole === "Suvlasnik" && (
                                 <div>
                                     <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
                                         Potvrđujem dolazak
