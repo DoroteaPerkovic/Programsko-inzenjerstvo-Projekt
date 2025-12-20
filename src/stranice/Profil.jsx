@@ -2,7 +2,7 @@ import Header from '../komponente/Header.jsx';
 import './Profil.css'
 
 
-function App(){
+function Profil(){
 
     const username = localStorage.getItem('username')
     const email = localStorage.getItem('email')
@@ -54,4 +54,4 @@ function App(){
 
 }
 
-export default App;
+export default Profil;

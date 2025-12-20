@@ -1,7 +1,8 @@
-import { useState } from "react";
-import Sastanci from "../komponente/Sastanci.jsx";
-import Header from "../komponente/Header.jsx";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import Header from "../komponente/Header";
+import Sastanci from "../komponente/Sastanci";
+
 
 const categoryMap = {
   planirani: "Planirani",
@@ -10,15 +11,21 @@ const categoryMap = {
   arhivirani: "Arhivirani",
 };
 
-function App() {
-  const {category} = useParams();
-  const selectedCategory= categoryMap[category] || "Objavljeni";
+function Suvlasnici() {
+  const { category } = useParams();
+
+  const selectedCategory =
+    categoryMap[category] || "Objavljeni";
+
   return (
     <>
-      <Header userRole="suvlasnik" onSelectcategory={setselectedCategory} />
-      <Sastanci category={selectedCategory} userRole="suvlasnik" />
+      <Header userRole="Suvlasnik" />
+      <Sastanci
+        category={selectedCategory}
+        userRole="Suvlasnik"
+      />
     </>
   );
 }
 
-export default App;
+export default Suvlasnici;

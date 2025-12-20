@@ -11,16 +11,16 @@ const categoryMap = {
   arhivirani: "Arhivirani",
 };
 
-function App() {
+function Predstavnik() {
   const { category } = useParams();
   const selectedCategory = categoryMap[category] || "Objavljeni";
 
   return (
     <>
-      <Header userRole="predstavnik" onSelectcategory={setselectedCategory} />
+      <Header userRole="Predstavnik suvlasnika" />
       <Sastanci category={selectedCategory} userRole="Predstavnik suvlasnika" />
     </>
   );
 }
 
-export default App;
+export default Predstavnik;

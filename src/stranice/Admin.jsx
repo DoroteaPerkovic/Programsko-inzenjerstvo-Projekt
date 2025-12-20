@@ -2,7 +2,7 @@
 import UserAdd from '../komponente/UserAdd.jsx'
 import Header from '../komponente/Header.jsx';
 
-function App(){
+function Admin(){
 
   return(
     <>
@@ -13,4 +13,4 @@ function App(){
 
 }
 
-export default App
+export default Admin;
