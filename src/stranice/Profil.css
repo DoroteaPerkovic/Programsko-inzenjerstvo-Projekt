@@ -1,23 +1,23 @@
-.password-form{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 402px;
-    background-color: white;
-    padding: 15px;
-    color: rgb(55, 52, 53);
+.password-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 402px;
+  background-color: white;
+  padding: 15px;
+  color: rgb(55, 52, 53);
 }
 
-.blockProfila{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 80px;
-    background-color: rgb(40, 189, 214);
-    margin-top: 50px;
-    height: 60vh;
-    width: 70VW
+.blockProfila {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  background-color: rgb(40, 189, 214);
+  margin-top: 50px;
+  height: 60vh;
+  width: 70vw;
 }
 
 .podatci {
@@ -31,13 +31,13 @@
   margin-bottom: 20px;
   font-size: 22px;
   font-weight: 600;
-  color: rgb(55, 52, 53);;
+  color: rgb(55, 52, 53);
   text-align: center;
 }
 
 .podElm {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   align-items: center;
   padding: 10px 0;
   font-size: 16px;
@@ -58,18 +58,91 @@
   word-break: break-word;
 }
 
-
 .unosLozinke {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .unosLozinke label {
-    text-align: start;
+  text-align: start;
 }
 
 .unosLozinke input {
-    width: 10vw;
+  width: 10vw;
+}
+
+/*tablet*/
+@media (max-width: 1024px) {
+  .blockProfila {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    background-color: rgb(40, 189, 214);
+    margin-top: 50px;
+    height: 60vh;
+    width: 70vw;
+    padding: 20px;
+  }
+
+  .podatci {
+    width: 400px;
+    padding: 24px 28px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/*mobitel*/
+@media (max-width: 600px) {
+  .password-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 60vw;
+    height: 30vh;
+    background-color: white;
+    padding: 15px;
+    color: rgb(55, 52, 53);
+  }
+
+  .blockProfila {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: rgb(40, 189, 214);
+    margin-top: 80px;
+    height: 70vh;
+    width: 80vw;
+  }
+
+  .podatci {
+    width: 60vw;
+    height: 30vh;
+    padding: 20px 25px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .naslov1{
+    font-size: 20px;
+  }
+
+  .podElm{
+    padding: 5px;
+  }
+
+  .podElm i{
+    font-size: 15px;
+  }
+
+  span{
+    font-size: 15px;
+  }
+
 }
