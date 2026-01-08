@@ -27,6 +27,21 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
+.logout-btn {
+  background-color: #dc3545; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
 .naslov1 {
   margin-bottom: 20px;
   font-size: 22px;

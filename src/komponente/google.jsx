@@ -15,12 +15,17 @@ function GoogleLoginButton() {
         const response = await axios.post('https://programsko-inzenjerstvo-projekt-ll9v.onrender.com/api/google-auth/', {
             access_token: credentialResponse.access_token,
         });
+        
         localStorage.setItem('access', response.data.access);
         localStorage.setItem('refresh', response.data.refresh);
         localStorage.setItem('username', response.data.user.username);
 
         const userRole = response.data.userRole || response.data.user.role;
         localStorage.setItem('userRole', userRole);
+
+        localStorage.setItem('email', response.data.user.email);
+
+        localStorage.setItem('username', response.data.user.username);
 
         const role = userRole?.toLowerCase();
         if (role === 'administrator') {

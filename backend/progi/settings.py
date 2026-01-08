@@ -142,9 +142,10 @@ DATABASES = {
         'USER': 'postgres.neegzizcdtevcrbxsqsj',
         'PASSWORD': 'p09-nexify-team',
         'HOST': 'aws-1-eu-north-1.pooler.supabase.com',
-        'PORT': '6543',
+        'PORT': '5432',
     }
 }
+
 
 
 
