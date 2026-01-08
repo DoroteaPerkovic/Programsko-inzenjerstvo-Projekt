@@ -87,127 +87,134 @@ function SastanakAdd() {
   };
 
   return (
-    <div className="dodavanjeOkvir">
-      <h1>Novi sastanak</h1>
-      <form className="formaDodaj" onSubmit={handleSubmit}>
-        <div className="desno">
-          <label>
-            Naslov
-            <input
-              type="text"
-              value={form.naslov}
-              onChange={handleChange("naslov")}
-            />
-          </label>
-          <label>
-            Sažetak
-            <textarea value={form.sazetak} onChange={handleChange("sazetak")} />
-          </label>
-          <label>
-            Datum
-            <input
-              type="date"
-              value={form.datum || ""}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, datum: e.target.value }))
-              }
-              required
-            />
-          </label>
+    <div className="back">
+      <div className="dodavanjeOkvir">
+        <h1>Novi sastanak</h1>
+        <form className="formaDodaj" onSubmit={handleSubmit}>
+          <div className="desno">
+            <label>
+              Naslov
+              <input
+                type="text"
+                value={form.naslov}
+                onChange={handleChange("naslov")}
+              />
+            </label>
+            <label>
+              Sažetak
+              <textarea
+                value={form.sazetak}
+                onChange={handleChange("sazetak")}
+              />
+            </label>
+            <label>
+              Datum
+              <input
+                type="date"
+                value={form.datum || ""}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, datum: e.target.value }))
+                }
+                required
+              />
+            </label>
 
-          <label>
-            Vrijeme
-            <input
-              type="time"
-              value={form.vrijeme || ""}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, vrijeme: e.target.value }))
-              }
-              required
-            />
-          </label>
+            <label>
+              Vrijeme
+              <input
+                type="time"
+                value={form.vrijeme || ""}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, vrijeme: e.target.value }))
+                }
+                required
+              />
+            </label>
 
-          <label>
-            Mjesto
-            <input
-              type="text"
-              value={form.mjesto}
-              onChange={handleChange("mjesto")}
-            />
-          </label>
-        </div>
-
-        <div className="lijevo">
-          <label className="tdr">Točke dnevnog reda</label>
-          <div className="tdrContainer">
-            {form.tockeDnevnogReda.map((tocka, index) => (
-              <div key={index} className="tockaReda">
-                <div className="goreTocka">
-                  <input
-                    type="text"
-                    value={tocka.tekst}
-                    onChange={(e) =>
-                      handleTockaChange(index, "tekst", e.target.value)
-                    }
-                    placeholder={`Točka ${index + 1}`}
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => ukloniTocku(index)}
-                    disabled={form.tockeDnevnogReda.length === 1}
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="doleTocka">
-                  <button
-                    type="button"
-                    className={`button2 ${tocka.pravniUcinak ? "active" : ""}`}
-                    onClick={() =>
-                      handleTockaChange(
-                        index,
-                        "pravniUcinak",
-                        !tocka.pravniUcinak
-                      )
-                    }
-                  >
-                    Pravni učinak
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`button2 ${
-                      tocka.potrebnoGlasanje ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      handleTockaChange(
-                        index,
-                        "potrebnoGlasanje",
-                        !tocka.potrebnoGlasanje
-                      )
-                    }
-                  >
-                    Glasanje
-                  </button>
-                </div>
-              </div>
-            ))}
+            <label>
+              Mjesto
+              <input
+                type="text"
+                value={form.mjesto}
+                onChange={handleChange("mjesto")}
+              />
+            </label>
           </div>
 
-          <button type="button" onClick={dodajTocku}>
-            + Dodaj točku
-          </button>
+          <div className="lijevo">
+            <label className="tdr">Točke dnevnog reda</label>
+            <div className="tdrContainer">
+              {form.tockeDnevnogReda.map((tocka, index) => (
+                <div key={index} className="tockaReda">
+                  <div className="goreTocka">
+                    <input
+                      type="text"
+                      value={tocka.tekst}
+                      onChange={(e) =>
+                        handleTockaChange(index, "tekst", e.target.value)
+                      }
+                      placeholder={`Točka ${index + 1}`}
+                    />
 
-          <div className="actions">
-            <button type="submit">Spremi</button>
-            <button type="button" onClick={() => navigate(-1)}>
-              Natrag
+                    <button
+                      type="button"
+                      onClick={() => ukloniTocku(index)}
+                      disabled={form.tockeDnevnogReda.length === 1}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div className="doleTocka">
+                    <button
+                      type="button"
+                      className={`button2 ${
+                        tocka.pravniUcinak ? "active" : ""
+                      }`}
+                      onClick={() =>
+                        handleTockaChange(
+                          index,
+                          "pravniUcinak",
+                          !tocka.pravniUcinak
+                        )
+                      }
+                    >
+                      Pravni učinak
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`button2 ${
+                        tocka.potrebnoGlasanje ? "active" : ""
+                      }`}
+                      onClick={() =>
+                        handleTockaChange(
+                          index,
+                          "potrebnoGlasanje",
+                          !tocka.potrebnoGlasanje
+                        )
+                      }
+                    >
+                      Glasanje
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button type="button" onClick={dodajTocku}>
+              + Dodaj točku
             </button>
+
+            <div className="actions">
+              <button type="submit">Spremi</button>
+              <button type="button" onClick={() => navigate(-1)}>
+                Natrag
+              </button>
+            </div>
+            {error && <p className="error">{error}</p>}
           </div>
-          {error && <p className="error">{error}</p>}
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
