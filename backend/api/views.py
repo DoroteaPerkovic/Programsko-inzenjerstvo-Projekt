@@ -4,11 +4,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Korisnik
-from .serializer import RegisterSerializer
-from .auth_backend import verify_password
+from .serializer import RegisterSerializer, ChangePasswordSerializer
+from .auth_backend import verify_password, hash_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.views import APIView
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -115,3 +116,33 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response(
+                {'detail': 'Stara i nova lozinka su obavezne.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        korisnik = request.user  
+
+        if not verify_password(old_password, korisnik.password_hash):
+            return Response(
+                {'detail': 'Stara lozinka nije ispravna.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        korisnik.password_hash = hash_password(new_password)
+        korisnik.save()
+
+        return Response(
+            {'detail': 'Lozinka uspješno promijenjena.'},
+            status=status.HTTP_200_OK
+        )
