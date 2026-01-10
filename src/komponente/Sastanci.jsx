@@ -123,6 +123,8 @@ function Sastanci({ category, userRole }) {
   const [potvrde, setPotvrde] = useState({});
   const [sastanci, setSastanci] = useState(sastanciData);
   const navigate = useNavigate();
+  const [showToast, setShowToast] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("customSastanci") || "[]");
@@ -140,6 +142,22 @@ function Sastanci({ category, userRole }) {
         [id]: checked ? base + 1 : base - 1,
       };
     });
+  };
+
+  const handleObjaviClick = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmObjava = () => {
+    setShowConfirm(false);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+
+    // Ovdje stavite logiku za objavu sastanka
+  };
+
+  const cancelObjava = () => {
+    setShowConfirm(false);
   };
 
   return (
@@ -168,21 +186,56 @@ function Sastanci({ category, userRole }) {
                   <div className="gumbici">
                     <button
                       className="urediBtn"
-                      onClick={() => navigate("/sastankAdd")}
+                      onClick={() =>
+                        navigate("/sastanakAdd", {
+                          state: { sastanakId: sastanak.id },
+                        })
+                      }
                     >
                       Uredi
                     </button>
-                    <button className="objaviBtn">Objavi</button>
+                    <button className="objaviBtn" onClick={handleObjaviClick}>
+                      Objavi
+                    </button>
+                    {/* tu sastanak prelazi iz planiranog u objavljeni i salje se mail */}
+                    {showConfirm && (
+                      <div className="modalOverlay">
+                        <div className="modal">
+                          <p>
+                            Jeste li sigurni da želite objaviti sastanak (time
+                            šaljete mail svim suvlasnicima)?
+                          </p>
+                          <div className="modalButtons">
+                            <button onClick={confirmObjava}>Da</button>
+                            <button onClick={cancelObjava}>Ne</button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {showToast && (
+                      <div className="toast success">
+                        Sastanak je objavljen!
+                      </div>
+                    )}
                   </div>
                 )}
                 {new Date() > new Date(sastanak.vrijeme) &&
                   sastanak.stanje === "Objavljen" &&
                   userRole !== "Suvlasnik" && (
-                    <button className="obavljenBtn">Obavljen</button>
+                    <button className="obavljenBtn">Obavljen</button> //ovdje sastanak prelazi iz objavljenog u obavljeni
                   )}
                 {userRole !== "Suvlasnik" && sastanak.stanje === "Obavljen" && (
                   <div className="gumbici">
-                    <button className="dodajZakljBtn">Dodaj zaključak</button>
+                    <button
+                      className="dodajZakljBtn"
+                      onClick={() =>
+                        navigate("/zakljucak", {
+                          state: { sastanakId: sastanak.id },
+                        })
+                      }
+                    >
+                      Dodaj zaključak
+                    </button>
                     <button className="arhBtn">Arhiviraj</button>
                   </div>
                 )}
@@ -223,7 +276,8 @@ function Sastanci({ category, userRole }) {
               {sastanak.stanje === "Objavljen" && userRole === "Suvlasnik" && (
                 <div>
                   <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
-                    Potvrđujem dolazak
+                    Potvrđujem dolazak{" "}
+                    {/*tu bi se zbilja trebalo zapisivati broj potvrdenih dolazaka */}
                     <input
                       type="checkbox"
                       onChange={(e) =>

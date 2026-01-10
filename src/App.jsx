@@ -10,6 +10,7 @@ import Predstavnik from "./stranice/Predstavnik";
 import Suvlasnici from "./stranice/Suvlasnici";
 import SastanakAdd from "./stranice/sastanakAdd";
 import Profil from "./stranice/Profil";
+import Zakljucak from "./stranice/Zakljucak";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/suvlasnici/:category" element={<Suvlasnici />} />
         <Route path="/sastanakAdd" element={<SastanakAdd />} />
         <Route path="/profil" element={<Profil />} />
+        <Route path="/zakljucak" element={<Zakljucak />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
