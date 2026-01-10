@@ -272,4 +272,13 @@
   color: black;
 }
 
+.zaklj{
+  margin-left: 1rem;
+  margin-Top: 0.25rem;
+  padding-Left: 0.75rem;
+  border-Left: 3px solid #ccc;
+  font-Size: 0.9rem;
+  color: #555;
+}
+
 

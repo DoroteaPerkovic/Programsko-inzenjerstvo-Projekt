@@ -49,16 +49,19 @@ const sastanciData = [
         naziv: "Usvajanje financijskog plana za 2026.",
         pravniUcinak: true,
         glasanje: true,
+        zakljucak: "Plan usvojen većinom glasova.",
       },
       {
         naziv: "Uređenje zelene površine ispred zgrade",
         pravniUcinak: false,
         glasanje: true,
+        zakljucak: "Radovi započinju u ožujku 2026.",
       },
       {
         naziv: "Postavljanje video-nadzora",
         pravniUcinak: true,
         glasanje: true,
+        zakljucak: "Odobrena instalacija na ulazima zgrade.",
       },
     ],
     brojPotvrdjenihSudjelovanja: 10,
@@ -251,8 +254,16 @@ function Sastanci({ category, userRole }) {
                   <ul>
                     {sastanak.točkeDnevnogReda.map((toc, idx) => (
                       <li key={idx}>
+                        <div>
                         {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
                         {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
+                        </div>
+                        {sastanak.stanje === "Arhiviran" && (
+                          <div className="zaklj">
+                            <strong>Zaključak:</strong>{" "}
+                            {toc.zakljucak || "Zaključak nije unesen."}
+                          </div>
+                        )}
                       </li>
                     ))}
                   </ul>
