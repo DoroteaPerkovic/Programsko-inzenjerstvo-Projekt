@@ -242,7 +242,7 @@
   padding: 10px 20px;
   border-radius: 5px;
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .modalOverlay {
@@ -272,7 +272,7 @@
   color: black;
 }
 
-.zaklj{
+.zaklj {
   margin-left: 1rem;
   margin-Top: 0.25rem;
   padding-Left: 0.75rem;
@@ -281,4 +281,34 @@
   color: #555;
 }
 
+.naslovAS .obavljenBtn {
+  background-color: #c5c5c5;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
 
+.naslovAS .obavljenBtn:hover {
+  background-color: #9b9b9b;
+}
+
+.naslovAS .gumbici button {
+  background-color: #c5c5c5;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.naslovAS .gumbici button:hover {
+  background-color: #9b9b9b;
+}
+
+.naslovAS .razmak {
+  margin-bottom: 1.5vh;
+}

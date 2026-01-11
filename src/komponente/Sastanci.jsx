@@ -184,7 +184,7 @@ function Sastanci({ category, userRole }) {
           .map((sastanak) => (
             <div key={sastanak.id} className="sastanakAS">
               <div className={`naslovAS ${sastanak.stanje.toLowerCase()}`}>
-                <h3>{sastanak.naslov}</h3>
+                <h3 className="razmak">{sastanak.naslov}</h3>
                 {sastanak.stanje === "Planiran" && (
                   <div className="gumbici">
                     <button
@@ -255,8 +255,8 @@ function Sastanci({ category, userRole }) {
                     {sastanak.točkeDnevnogReda.map((toc, idx) => (
                       <li key={idx}>
                         <div>
-                        {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
-                        {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
+                          {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
+                          {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
                         </div>
                         {sastanak.stanje === "Arhiviran" && (
                           <div className="zaklj">
