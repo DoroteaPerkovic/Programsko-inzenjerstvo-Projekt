@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./sastanakAdd.css";
+import { createSastanak, updateSastanak, getSastanak } from "../services/SastanakService";
 
 function SastanakAdd() {
   const navigate = useNavigate();
@@ -18,25 +19,36 @@ function SastanakAdd() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (sastanakId) {
-      const saved = JSON.parse(localStorage.getItem("customSastanci") || "[]");
-      const sastanak = saved.find((s) => s.id === sastanakId);
-      if (sastanak) {
-        setForm({
-          naslov: sastanak.naslov,
-          sazetak: sastanak.sazetak,
-          vrijeme: sastanak.vrijeme,
-          mjesto: sastanak.mjesto,
-          tockeDnevnogReda: sastanak.tockeDnevnogReda.map((t) => ({
-            tekst: t.tekst || t.naziv,
-            pravniUcinak: t.pravniUcinak || false,
-            potrebnoGlasanje: t.potrebnoGlasanje || t.glasanje || false,
-          })),
-        });
+    const fetchSastanak = async () => {
+      if (sastanakId) {
+        try {
+          setLoading(true);
+          const data = await getSastanak(sastanakId);
+          
+          setForm({
+            naslov: data.naslov,
+            sazetak: data.sazetak,
+            vrijeme: data.datum_vrijeme,
+            mjesto: data.lokacija,
+            tockeDnevnogReda: data.tocke_dnevnog_reda?.map((t) => ({
+              tekst: t.naziv,
+              pravniUcinak: t.pravni_ucinak || false,
+              potrebnoGlasanje: true,
+            })) || [{ tekst: "", pravniUcinak: false, potrebnoGlasanje: false }],
+          });
+        } catch (err) {
+          console.error('Error fetching sastanak:', err);
+          setError('Greška pri dohvaćanju sastanka');
+        } finally {
+          setLoading(false);
+        }
       }
-    }
+    };
+
+    fetchSastanak();
   }, [sastanakId]);
 
   const handleChange = (field) => (e) =>
@@ -67,7 +79,7 @@ function SastanakAdd() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -85,34 +97,50 @@ function SastanakAdd() {
       return;
     }
 
-    const saved = JSON.parse(localStorage.getItem("customSastanci") || "[]");
+    // Prepare data for API
+    const sastanakData = {
+      naslov: form.naslov,
+      sazetak: form.sazetak,
+      datum_vrijeme: form.vrijeme,
+      lokacija: form.mjesto,
+      tocke_dnevnog_reda: prazneTocke.map((tocka, index) => ({
+        broj_tocke: index + 1,
+        naziv: tocka.tekst,
+        opis: "",
+        pravni_ucinak: tocka.pravniUcinak
+      }))
+    };
 
-    if (sastanakId) {
-      const noviSastanci = saved.map((s) =>
-        s.id === sastanakId ? { ...s, ...form, tockeDnevnogReda: prazneTocke } : s
-      );
-      localStorage.setItem("customSastanci", JSON.stringify(noviSastanci));
-    } else {
-      const noviSastanak = {
-        ...form,
-        id: Date.now(),
-        stanje: "Planiran",
-        brojPotvrdjenihSudjelovanja: 1,
-        tockeDnevnogReda: prazneTocke,
-      };
-      localStorage.setItem(
-        "customSastanci",
-        JSON.stringify([...saved, noviSastanak])
-      );
+    try {
+      setLoading(true);
+      let result;
+
+      if (sastanakId) {
+        // Update existing meeting
+        result = await updateSastanak(sastanakId, sastanakData);
+      } else {
+        // Create new meeting
+        result = await createSastanak(sastanakData);
+      }
+
+      if (result.ok) {
+        navigate(-1);
+      } else {
+        setError(result.data?.error || "Greška pri spremanju sastanka");
+      }
+    } catch (err) {
+      console.error('Error saving sastanak:', err);
+      setError("Greška pri spremanju sastanka. Provjerite internetsku vezu.");
+    } finally {
+      setLoading(false);
     }
-
-    navigate(-1);
   };
 
   return (
     <div className="back">
       <div className="dodavanjeOkvir">
-        <h1>{sastanakId ? "Uredi sastanak" : "Novi sastanak"}</h1>        {/*kada je uredi sastanak onda morate staviti da se podaci tog sastanaka citaju iz baze da bih ih se moglo urediti*/}
+        <h1>{sastanakId ? "Uredi sastanak" : "Novi sastanak"}</h1>
+        {loading && <p>Učitavanje...</p>}
         <form className="formaDodaj" onSubmit={handleSubmit}>
           <div className="desno">
             <label>
@@ -213,8 +241,10 @@ function SastanakAdd() {
             </button>
 
             <div className="actions">
-              <button type="submit">Spremi</button>
-              <button type="button" onClick={() => navigate(-1)}>
+              <button type="submit" disabled={loading}>
+                {loading ? "Spremanje..." : "Spremi"}
+              </button>
+              <button type="button" onClick={() => navigate(-1)} disabled={loading}>
                 Natrag
               </button>
             </div>

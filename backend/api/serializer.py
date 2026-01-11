@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Korisnik, Uloga
+    Korisnik, Uloga, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje
 )
 from .auth_backend import hash_password
 
@@ -84,3 +84,79 @@ class RegisterSerializer(serializers.Serializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class StatusSastankaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StatusSastanka
+        fields = ['id_status', 'naziv_status']
+
+
+class TockeDnevRedaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TockeDnevReda
+        fields = ['id_tocke', 'broj_tocke', 'naziv', 'opis', 'pravni_ucinak', 'id_sastanak']
+        read_only_fields = ['id_tocke']
+
+
+class SastanakSerializer(serializers.ModelSerializer):
+    tocke_dnevnog_reda = TockeDnevRedaSerializer(many=True, required=False, write_only=True)
+    status = StatusSastankaSerializer(source='id_status', read_only=True)
+    korisnik_ime = serializers.CharField(source='id_korisnik.korisnicko_ime', read_only=True)
+    broj_potvrdenih = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Sastanak
+        fields = ['id_sastanak', 'naslov', 'napravljen_od', 'lokacija', 
+                  'datum_vrijeme', 'sazetak', 'id_korisnik', 'id_status', 
+                  'status', 'korisnik_ime', 'tocke_dnevnog_reda', 'broj_potvrdenih']
+        read_only_fields = ['id_sastanak', 'napravljen_od']
+
+    def get_broj_potvrdenih(self, obj):
+        return Sudjeluje.objects.filter(id_sastanak=obj, potvrda=True).count()
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        tocke = TockeDnevReda.objects.filter(id_sastanak=instance).order_by('broj_tocke')
+        representation['tocke_dnevnog_reda'] = TockeDnevRedaSerializer(tocke, many=True).data
+        return representation
+
+    def create(self, validated_data):
+        tocke_data = validated_data.pop('tocke_dnevnog_reda', [])
+        sastanak = Sastanak.objects.create(**validated_data)
+        
+        for idx, tocka_data in enumerate(tocke_data, start=1):
+            tocka_data.pop('broj_tocke', None)
+            TockeDnevReda.objects.create(
+                id_sastanak=sastanak,
+                broj_tocke=idx,
+                **tocka_data
+            )
+        
+        return sastanak
+
+    def update(self, instance, validated_data):
+        tocke_data = validated_data.pop('tocke_dnevnog_reda', None)
+        
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if tocke_data is not None:
+            # Delete existing tocke and create new ones
+            TockeDnevReda.objects.filter(id_sastanak=instance).delete()
+            for idx, tocka_data in enumerate(tocke_data, start=1):
+                TockeDnevReda.objects.create(
+                    id_sastanak=instance,
+                    broj_tocke=idx,
+                    **tocka_data
+                )
+        
+        return instance
+
+
+class SudjelujeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sudjeluje
+        fields = ['id_sudjelovanja', 'vrijeme_potvrde', 'potvrda', 'id_korisnik', 'id_sastanak']
+        read_only_fields = ['id_sudjelovanja', 'vrijeme_potvrde']
