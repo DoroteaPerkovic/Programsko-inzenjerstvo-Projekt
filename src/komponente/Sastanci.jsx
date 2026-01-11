@@ -167,8 +167,10 @@ function Sastanci({ category, userRole }) {
     <div className="tijelo">
       <h1 className="Naslov">
         {" "}
-        {category ? `${category} sastanci:` : "Sastanci:"}{" "}
+        {category ? `${category} sastanci` : "Sastanci:"}{" "}
       </h1>
+      <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
+
       <div className="okvirAS">
         {sastanci
           .filter((sastanak) => {
@@ -301,6 +303,8 @@ function Sastanci({ category, userRole }) {
             </div>
           ))}
       </div>
+      <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
+
     </div>
   );
 }
