@@ -3,13 +3,17 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Korisnik
-from .serializer import RegisterSerializer, ChangePasswordSerializer
+from .models import Korisnik, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje
+from .serializer import (
+    RegisterSerializer, ChangePasswordSerializer, 
+    SastanakSerializer, SudjelujeSerializer
+)
 from .auth_backend import verify_password, hash_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.views import APIView
+from django.utils import timezone
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -145,4 +149,181 @@ class ChangePasswordView(APIView):
         return Response(
             {'detail': 'Lozinka uspješno promijenjena.'},
             status=status.HTTP_200_OK
+        )
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def sastanci_list_create(request):
+    """
+    GET: List all meetings
+    POST: Create a new meeting (only for Predstavnik suvlasnika and Administrator)
+    """
+    if request.method == 'GET':
+        sastanci = Sastanak.objects.all().order_by('-datum_vrijeme')
+        
+        status_filter = request.query_params.get('status', None)
+        if status_filter:
+            sastanci = sastanci.filter(id_status__naziv_status=status_filter)
+        
+        serializer = SastanakSerializer(sastanci, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'POST':
+        korisnik = request.user
+        
+        if not isinstance(korisnik, Korisnik):
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+        
+        role = korisnik.get_role()
+        if role not in ['Administrator', 'Predstavnik suvlasnika']:
+            return Response(
+                {'error': 'Samo administrator i predstavnik suvlasnika mogu kreirati sastanke.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        data = request.data.copy()
+        data['id_korisnik'] = korisnik.id_korisnik
+        
+        if 'id_status' not in data:
+            try:
+                planiran_status = StatusSastanka.objects.get(naziv_status='Planiran')
+                data['id_status'] = planiran_status.id_status
+            except StatusSastanka.DoesNotExist:
+                data['id_status'] = 1
+        
+        serializer = SastanakSerializer(data=data)
+        if serializer.is_valid():
+            sastanak = serializer.save(napravljen_od=timezone.now())
+            return Response(
+                SastanakSerializer(sastanak).data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def sastanak_detail(request, pk):
+    """
+    GET: Retrieve a specific meeting
+    PUT: Update a meeting (only for creator, Predstavnik suvlasnika and Administrator)
+    DELETE: Delete a meeting (only for creator, Predstavnik suvlasnika and Administrator)
+    """
+    try:
+        sastanak = Sastanak.objects.get(pk=pk)
+    except Sastanak.DoesNotExist:
+        return Response({'error': 'Sastanak ne postoji.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = SastanakSerializer(sastanak)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'PUT':
+        korisnik = request.user
+        role = korisnik.get_role()
+        
+        # Check permissions
+        if not (role in ['Administrator', 'Predstavnik suvlasnika'] or 
+                sastanak.id_korisnik == korisnik):
+            return Response(
+                {'error': 'Nemate dozvolu za uređivanje ovog sastanka.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        serializer = SastanakSerializer(sastanak, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        korisnik = request.user
+        role = korisnik.get_role()
+        
+        # Check permissions
+        if not (role in ['Administrator', 'Predstavnik suvlasnika'] or 
+                sastanak.id_korisnik == korisnik):
+            return Response(
+                {'error': 'Nemate dozvolu za brisanje ovog sastanka.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        sastanak.delete()
+        return Response(
+            {'message': 'Sastanak uspješno obrisan.'},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def sastanak_potvrda(request, pk):
+    """
+    POST: Confirm attendance for a meeting (for Suvlasnik)
+    """
+    try:
+        sastanak = Sastanak.objects.get(pk=pk)
+    except Sastanak.DoesNotExist:
+        return Response({'error': 'Sastanak ne postoji.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    korisnik = request.user
+    potvrda = request.data.get('potvrda', True)
+    
+    # Get or create Sudjeluje record
+    sudjelovanje, created = Sudjeluje.objects.get_or_create(
+        id_korisnik=korisnik,
+        id_sastanak=sastanak,
+        defaults={'potvrda': potvrda, 'vrijeme_potvrde': timezone.now()}
+    )
+    
+    if not created:
+        # Update existing record
+        sudjelovanje.potvrda = potvrda
+        sudjelovanje.vrijeme_potvrde = timezone.now()
+        sudjelovanje.save()
+    
+    serializer = SudjelujeSerializer(sudjelovanje)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def sastanak_change_status(request, pk):
+    """
+    POST: Change meeting status (Planiran -> Objavljen -> Obavljen -> Arhiviran)
+    Only for Predstavnik suvlasnika and Administrator
+    """
+    try:
+        sastanak = Sastanak.objects.get(pk=pk)
+    except Sastanak.DoesNotExist:
+        return Response({'error': 'Sastanak ne postoji.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    korisnik = request.user
+    role = korisnik.get_role()
+    
+    if role not in ['Administrator', 'Predstavnik suvlasnika']:
+        return Response(
+            {'error': 'Nemate dozvolu za promjenu statusa sastanka.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    new_status_name = request.data.get('status')
+    if not new_status_name:
+        return Response(
+            {'error': 'Status je obavezan.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        new_status = StatusSastanka.objects.get(naziv_status=new_status_name)
+        sastanak.id_status = new_status
+        sastanak.save()
+        
+        serializer = SastanakSerializer(sastanak)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except StatusSastanka.DoesNotExist:
+        return Response(
+            {'error': f'Status "{new_status_name}" ne postoji.'},
+            status=status.HTTP_400_BAD_REQUEST
         )
