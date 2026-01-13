@@ -15,7 +15,7 @@ const parseLocalDateTime = (dt) => {
   const timePart = timePartRaw.slice(0, 8);
   const [y, m, d] = datePart.split("-").map(Number);
   const [hh, mm, ss = 0] = timePart.split(":").map(Number);
-  return new Date(d, m - 1, y, hh, mm, ss, 0);
+  return new Date(y, m - 1, d, hh, mm, ss, 0);
 };
 
 function Sastanci({ category, userRole }) {
@@ -60,7 +60,7 @@ function Sastanci({ category, userRole }) {
             sastanak.tocke_dnevnog_reda?.map((tocka) => ({
               naziv: tocka.naziv,
               pravniUcinak: tocka.pravni_ucinak,
-              glasanje: true,
+              glasanje: tocka.glasanje || false,
               zakljucak: tocka.opis,
             })) || [],
           brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0,
