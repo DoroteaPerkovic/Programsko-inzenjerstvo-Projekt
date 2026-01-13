@@ -9,16 +9,13 @@ import {
 
 const parseLocalDateTime = (dt) => {
   if (!dt) return null;
-
-  const s = String(dt).replace(" ", "T"); // ako dođe sa spaceom
+  const s = String(dt).replace(" ", "T");
   const [datePart, timePartRaw] = s.split("T");
-  if (!datePart || !timePartRaw) return new Date(dt); // fallback
-
-  const timePart = timePartRaw.slice(0, 8); // "HH:mm:ss" ili "HH:mm"
+  if (!datePart || !timePartRaw) return new Date(dt);
+  const timePart = timePartRaw.slice(0, 8);
   const [y, m, d] = datePart.split("-").map(Number);
   const [hh, mm, ss = 0] = timePart.split(":").map(Number);
-
-  return new Date(y, m - 1, d, hh, mm, ss, 0); // lokalno vrijeme
+  return new Date(d, m - 1, y, hh, mm, ss, 0);
 };
 
 function Sastanci({ category, userRole }) {
@@ -218,20 +215,6 @@ function Sastanci({ category, userRole }) {
                     >
                       Objavi
                     </button>
-                     {showConfirm && selectedSastanakId === sastanak.id && (
-                      <div className="modalOverlay">
-                        <div className="modal">
-                          <p>
-                            Jeste li sigurni da želite objaviti sastanak (time
-                            šaljete mail svim suvlasnicima)?
-                          </p>
-                          <div className="modalButtons">
-                            <button onClick={confirmObjava}>Da</button>
-                            <button onClick={cancelObjava}>Ne</button>
-                          </div>
-                        </div>
-                      </div>
-                    )} 
                     {showToast && (
                       <div className="toast success">{toastMessage}</div>
                     )}
@@ -240,7 +223,12 @@ function Sastanci({ category, userRole }) {
                 {Date.now() > parseLocalDateTime(sastanak.vrijeme)?.getTime() &&
                   sastanak.stanje === "Objavljen" &&
                   userRole !== "Suvlasnik" && (
-                    <button className="obavljenBtn">Obavljen</button>
+                    <button
+                      className="obavljenBtn"
+                      onClick={() => handleObaviClick(sastanak.id)}
+                    >
+                      Obavljen
+                    </button>
                   )}
                 {showConfirm && (
                   <div className="modalOverlay">
