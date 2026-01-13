@@ -368,11 +368,7 @@ function Sastanci({ category, userRole }) {
                 <div className="vrijemeAS">
                   <p>
                     <p>
-                      {new Date(sastanak.vrijeme).toLocaleDateString("hr-HR")}{" "}
-                      {new Date(sastanak.vrijeme).toLocaleTimeString("hr-HR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                     {String(sastanak.vrijeme).slice(0, 16).replace("T", " ")}
                     </p>  
                   </p>
                 </div>
