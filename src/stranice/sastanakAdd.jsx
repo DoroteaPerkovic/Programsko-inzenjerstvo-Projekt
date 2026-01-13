@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./sastanakAdd.css";
-import { createSastanak, updateSastanak, getSastanak } from "../services/SastanakService";
+import {
+  createSastanak,
+  updateSastanak,
+  getSastanak,
+} from "../services/SastanakService";
 
 function SastanakAdd() {
   const navigate = useNavigate();
@@ -27,7 +31,7 @@ function SastanakAdd() {
         try {
           setLoading(true);
           const data = await getSastanak(sastanakId);
-          
+
           setForm({
             naslov: data.naslov,
             sazetak: data.sazetak,
@@ -37,11 +41,13 @@ function SastanakAdd() {
               tekst: t.naziv,
               pravniUcinak: t.pravni_ucinak || false,
               potrebnoGlasanje: true,
-            })) || [{ tekst: "", pravniUcinak: false, potrebnoGlasanje: false }],
+            })) || [
+              { tekst: "", pravniUcinak: false, potrebnoGlasanje: false },
+            ],
           });
         } catch (err) {
-          console.error('Error fetching sastanak:', err);
-          setError('Greška pri dohvaćanju sastanka');
+          console.error("Error fetching sastanak:", err);
+          setError("Greška pri dohvaćanju sastanka");
         } finally {
           setLoading(false);
         }
@@ -107,8 +113,8 @@ function SastanakAdd() {
         broj_tocke: index + 1,
         naziv: tocka.tekst,
         opis: "",
-        pravni_ucinak: tocka.pravniUcinak
-      }))
+        pravni_ucinak: tocka.pravniUcinak,
+      })),
     };
 
     try {
@@ -129,7 +135,7 @@ function SastanakAdd() {
         setError(result.data?.error || "Greška pri spremanju sastanka");
       }
     } catch (err) {
-      console.error('Error saving sastanak:', err);
+      console.error("Error saving sastanak:", err);
       setError("Greška pri spremanju sastanka. Provjerite internetsku vezu.");
     } finally {
       setLoading(false);
@@ -149,6 +155,7 @@ function SastanakAdd() {
                 type="text"
                 value={form.naslov}
                 onChange={handleChange("naslov")}
+                maxLength={50}
               />
             </label>
             <label>
@@ -156,6 +163,7 @@ function SastanakAdd() {
               <textarea
                 value={form.sazetak}
                 onChange={handleChange("sazetak")}
+                maxLength={500}
               />
             </label>
             <label>
@@ -165,6 +173,7 @@ function SastanakAdd() {
                 value={form.vrijeme}
                 onChange={handleChange("vrijeme")}
                 required
+                min={new Date().toISOString().slice(0, 16)}
               />
             </label>
             <label>
@@ -173,6 +182,7 @@ function SastanakAdd() {
                 type="text"
                 value={form.mjesto}
                 onChange={handleChange("mjesto")}
+                minLength={200}
               />
             </label>
           </div>
@@ -244,7 +254,11 @@ function SastanakAdd() {
               <button type="submit" disabled={loading}>
                 {loading ? "Spremanje..." : "Spremi"}
               </button>
-              <button type="button" onClick={() => navigate(-1)} disabled={loading}>
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                disabled={loading}
+              >
                 Natrag
               </button>
             </div>

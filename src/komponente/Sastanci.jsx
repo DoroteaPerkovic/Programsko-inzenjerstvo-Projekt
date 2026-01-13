@@ -366,7 +366,7 @@ function Sastanci({ category, userRole }) {
                 </p>
                 <p className="kontrolaVisine "></p>
               </div>
-              {sastanak.stanje === "Objavljen" && userRole === "Suvlasnik" && (
+              {sastanak.stanje === "Objavljen" && (
                 <div>
                   <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
                     Potvrđujem dolazak{" "}
