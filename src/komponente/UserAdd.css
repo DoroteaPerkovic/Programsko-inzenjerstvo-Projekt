@@ -23,6 +23,7 @@ body{
   background-color: rgba(40, 189, 214, 1);
   width: 50%;
   height: 85%;
+  min-height: fit-content;
   margin: 20px;
   box-shadow: 5px 5px 15px rgb(131, 128, 128);
   padding: 25px;

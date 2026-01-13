@@ -30,7 +30,7 @@ function Profil(){
           return;
         }
     
-        try {
+        try { 
           const token = localStorage.getItem('access');
     
           const res = await fetch(`${API_URL}/api/change-password/`, {

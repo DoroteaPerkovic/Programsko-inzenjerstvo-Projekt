@@ -71,7 +71,7 @@ function Login() {
                 />
                 <br />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">Prijava</button>
+                <button type="submit" id="login-button">Prijava</button>
                 <br />
                 <GoogleLoginButton setError={setError}/>
             </form>
