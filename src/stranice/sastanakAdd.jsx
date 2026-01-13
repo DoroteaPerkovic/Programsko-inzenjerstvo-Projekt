@@ -182,7 +182,6 @@ function SastanakAdd() {
                 type="text"
                 value={form.mjesto}
                 onChange={handleChange("mjesto")}
-                minLength={200}
               />
             </label>
           </div>
