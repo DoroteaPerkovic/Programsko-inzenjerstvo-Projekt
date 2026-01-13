@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from "react";
 import "./Sastanci.css";
 import { useNavigate } from "react-router-dom";
-import { getSastanci, potvrdaSastanak, changeSastanakStatus } from "../services/SastanakService";
+import {
+  getSastanci,
+  potvrdaSastanak,
+  changeSastanakStatus,
+} from "../services/SastanakService";
 
+const parseLocalDateTime = (dt) => {
+  if (!dt) return null;
+
+  const s = String(dt).replace(" ", "T"); // ako dođe sa spaceom
+  const [datePart, timePartRaw] = s.split("T");
+  if (!datePart || !timePartRaw) return new Date(dt); // fallback
+
+  const timePart = timePartRaw.slice(0, 8); // "HH:mm:ss" ili "HH:mm"
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [hh, mm, ss = 0] = timePart.split(":").map(Number);
+
+  return new Date(y, m - 1, d, hh, mm, ss, 0); // lokalno vrijeme
+};
 
 function Sastanci({ category, userRole }) {
   const [potvrde, setPotvrde] = useState({});
@@ -10,52 +27,56 @@ function Sastanci({ category, userRole }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedSastanakId, setSelectedSastanakId] = useState(null);
-  const [confirmAction, setConfirmAction] = useState(null); 
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     const fetchSastanci = async () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching sastanci from API...');
-        console.log('Access token:', localStorage.getItem('access') ? 'Present' : 'Missing');
-        
+        console.log("Fetching sastanci from API...");
+        console.log(
+          "Access token:",
+          localStorage.getItem("access") ? "Present" : "Missing"
+        );
+
         const data = await getSastanci();
-        console.log('Received sastanci data:', data);
-        
+        console.log("Received sastanci data:", data);
+
         if (!Array.isArray(data)) {
-          console.error('API did not return an array:', data);
-          throw new Error('Invalid API response');
+          console.error("API did not return an array:", data);
+          throw new Error("Invalid API response");
         }
-        
-        const transformedData = data.map(sastanak => ({
+
+        const transformedData = data.map((sastanak) => ({
           id: sastanak.id_sastanak,
           naslov: sastanak.naslov,
           sazetak: sastanak.sazetak,
           vrijeme: sastanak.datum_vrijeme,
           mjesto: sastanak.lokacija,
-          stanje: sastanak.status?.naziv_status || 'Planiran',
-          tockeDnevnogReda: sastanak.tocke_dnevnog_reda?.map(tocka => ({
-            naziv: tocka.naziv,
-            pravniUcinak: tocka.pravni_ucinak,
-            glasanje: true,
-            zakljucak: tocka.opis
-          })) || [],
-          brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0
+          stanje: sastanak.status?.naziv_status || "Planiran",
+          tockeDnevnogReda:
+            sastanak.tocke_dnevnog_reda?.map((tocka) => ({
+              naziv: tocka.naziv,
+              pravniUcinak: tocka.pravni_ucinak,
+              glasanje: true,
+              zakljucak: tocka.opis,
+            })) || [],
+          brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0,
         }));
-        
-        console.log('Transformed sastanci:', transformedData);
+
+        console.log("Transformed sastanci:", transformedData);
         setSastanci(transformedData);
         setError(null);
       } catch (err) {
-        console.error('Error fetching sastanci:', err);
-        console.error('Error message:', err.message);
+        console.error("Error fetching sastanci:", err);
+        console.error("Error message:", err.message);
         setError(`Greška pri dohvaćanju sastanaka: ${err.message}`);
-        console.log('Using fallback data');
+        console.log("Using fallback data");
         setSastanci([]);
       } finally {
         setLoading(false);
@@ -75,7 +96,7 @@ function Sastanci({ category, userRole }) {
   const handleCheckboxChange = async (id, checked) => {
     try {
       await potvrdaSastanak(id, checked);
-      
+
       setPotvrde((prev) => {
         const current = sastanci.find((s) => s.id === id);
         const base = prev[id] ?? current?.brojPotvrdjenihSudjelovanja ?? 0;
@@ -85,65 +106,65 @@ function Sastanci({ category, userRole }) {
         };
       });
     } catch (err) {
-      console.error('Error confirming attendance:', err);
-      alert('Greška pri potvrđivanju dolaska');
+      console.error("Error confirming attendance:", err);
+      alert("Greška pri potvrđivanju dolaska");
     }
   };
 
   const handleObjaviClick = (sastanakId) => {
     setSelectedSastanakId(sastanakId);
-    setConfirmAction('objava');
+    setConfirmAction("objava");
     setShowConfirm(true);
   };
 
   const handleObaviClick = (sastanakId) => {
     setSelectedSastanakId(sastanakId);
-    setConfirmAction('obavljanje');
+    setConfirmAction("obavljanje");
     setShowConfirm(true);
   };
 
   const handleArhivirajClick = (sastanakId) => {
     setSelectedSastanakId(sastanakId);
-    setConfirmAction('arhiva');
+    setConfirmAction("arhiva");
     setShowConfirm(true);
   };
 
   const confirmStatusChange = async () => {
     setShowConfirm(false);
-    
+
     try {
       const newStatus = {
-        objava: 'Objavljen',
-        obavljanje: 'Obavljen',
-        arhiva: 'Arhiviran'  
+        objava: "Objavljen",
+        obavljanje: "Obavljen",
+        arhiva: "Arhiviran",
       }[confirmAction];
-  
+
       const result = await changeSastanakStatus(selectedSastanakId, newStatus);
-      
+
       if (result.ok) {
-        setSastanci(prev => prev.map(s => 
-          s.id === selectedSastanakId 
-            ? { ...s, stanje: newStatus }
-            : s
-        ));
+        setSastanci((prev) =>
+          prev.map((s) =>
+            s.id === selectedSastanakId ? { ...s, stanje: newStatus } : s
+          )
+        );
 
         const toastText = {
-          objava: 'Sastanak objavljen!',
-          obavljanje: 'Sastanak označen kao obavljen!',
-          arhiva: 'Sastanak arhiviran!'
+          objava: "Sastanak objavljen!",
+          obavljanje: "Sastanak označen kao obavljen!",
+          arhiva: "Sastanak arhiviran!",
         }[confirmAction];
 
         setToastMessage(toastText);
         setShowToast(true);
         setTimeout(() => setShowToast(false), 3000);
       } else {
-        alert('Greška pri promjeni statusa sastanka');
+        alert("Greška pri promjeni statusa sastanka");
       }
     } catch (err) {
-      console.error('Error changing meeting status:', err);
-      alert('Greška pri promjeni statusa sastanka');
+      console.error("Error changing meeting status:", err);
+      alert("Greška pri promjeni statusa sastanka");
     }
-  
+
     setSelectedSastanakId(null);
     setConfirmAction(null);
   };
@@ -161,7 +182,7 @@ function Sastanci({ category, userRole }) {
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
 
       {loading && <p>Učitavanje sastanaka...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="okvirAS">
         {sastanci
@@ -191,10 +212,13 @@ function Sastanci({ category, userRole }) {
                     >
                       Uredi
                     </button>
-                    <button className="objaviBtn" onClick={() => handleObjaviClick(sastanak.id)}>
+                    <button
+                      className="objaviBtn"
+                      onClick={() => handleObjaviClick(sastanak.id)}
+                    >
                       Objavi
                     </button>
-                    {/* {showConfirm && selectedSastanakId === sastanak.id && (
+                     {showConfirm && selectedSastanakId === sastanak.id && (
                       <div className="modalOverlay">
                         <div className="modal">
                           <p>
@@ -207,26 +231,27 @@ function Sastanci({ category, userRole }) {
                           </div>
                         </div>
                       </div>
-                    )} */}
+                    )} 
                     {showToast && (
-                      <div className="toast success">
-                        {toastMessage} 
-                      </div>
+                      <div className="toast success">{toastMessage}</div>
                     )}
                   </div>
                 )}
-                {new Date() > new Date(sastanak.vrijeme) &&
+                {Date.now() > parseLocalDateTime(sastanak.vrijeme)?.getTime() &&
                   sastanak.stanje === "Objavljen" &&
                   userRole !== "Suvlasnik" && (
-                    <button className="obavljenBtn" onClick={() => handleObaviClick(sastanak.id)}>Obavljen</button>
-                )}
+                    <button className="obavljenBtn">Obavljen</button>
+                  )}
                 {showConfirm && (
                   <div className="modalOverlay">
                     <div className="modal">
                       <p>
-                        {confirmAction === 'objava' && 'Jeste li sigurni da želite objaviti sastanak (time šaljete mail svim suvlasnicima)?'}
-                        {confirmAction === 'obavljanje' && 'Jeste li sigurni da želite označiti ovaj sastanak kao obavljen?'}
-                        {confirmAction === 'arhiva' && 'Jeste li sigurni da želite arhivirati sastanak?'}
+                        {confirmAction === "objava" &&
+                          "Jeste li sigurni da želite objaviti sastanak (time šaljete mail svim suvlasnicima)?"}
+                        {confirmAction === "obavljanje" &&
+                          "Jeste li sigurni da želite označiti ovaj sastanak kao obavljen?"}
+                        {confirmAction === "arhiva" &&
+                          "Jeste li sigurni da želite arhivirati sastanak?"}
                       </p>
                       <div className="modalButtons">
                         <button onClick={confirmStatusChange}>Da</button>
@@ -247,7 +272,12 @@ function Sastanci({ category, userRole }) {
                     >
                       Dodaj zaključak
                     </button>
-                    <button className="arhBtn" onClick={() => handleArhivirajClick(sastanak.id)}>Arhiviraj</button>
+                    <button
+                      className="arhBtn"
+                      onClick={() => handleArhivirajClick(sastanak.id)}
+                    >
+                      Arhiviraj
+                    </button>
                   </div>
                 )}
               </div>
@@ -310,7 +340,6 @@ function Sastanci({ category, userRole }) {
           ))}
       </div>
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
-
     </div>
   );
 }
