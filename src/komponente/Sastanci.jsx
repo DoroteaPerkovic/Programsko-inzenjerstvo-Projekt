@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./Sastanci.css";
 import { useNavigate } from "react-router-dom";
-import { getSastanci, potvrdaSastanak, changeSastanakStatus } from "../services/SastanakService";
+import {
+  getSastanci,
+  potvrdaSastanak,
+  changeSastanakStatus,
+} from "../services/SastanakService";
 
 const sastanciDataFallback = [
   {
@@ -137,41 +141,45 @@ function Sastanci({ category, userRole }) {
     const fetchSastanci = async () => {
       try {
         setLoading(true);
-        console.log('Fetching sastanci from API...');
-        console.log('Access token:', localStorage.getItem('access') ? 'Present' : 'Missing');
-        
+        console.log("Fetching sastanci from API...");
+        console.log(
+          "Access token:",
+          localStorage.getItem("access") ? "Present" : "Missing"
+        );
+
         const data = await getSastanci();
-        console.log('Received sastanci data:', data);
-        
+        console.log("Received sastanci data:", data);
+
         if (!Array.isArray(data)) {
-          console.error('API did not return an array:', data);
-          throw new Error('Invalid API response');
+          console.error("API did not return an array:", data);
+          throw new Error("Invalid API response");
         }
-        
-        const transformedData = data.map(sastanak => ({
+
+        const transformedData = data.map((sastanak) => ({
           id: sastanak.id_sastanak,
           naslov: sastanak.naslov,
           sazetak: sastanak.sazetak,
           vrijeme: sastanak.datum_vrijeme,
           mjesto: sastanak.lokacija,
-          stanje: sastanak.status?.naziv_status || 'Planiran',
-          točkeDnevnogReda: sastanak.tocke_dnevnog_reda?.map(tocka => ({
-            naziv: tocka.naziv,
-            pravniUcinak: tocka.pravni_ucinak,
-            glasanje: true,
-            zakljucak: tocka.opis
-          })) || [],
-          brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0
+          stanje: sastanak.status?.naziv_status || "Planiran",
+          točkeDnevnogReda:
+            sastanak.tocke_dnevnog_reda?.map((tocka) => ({
+              naziv: tocka.naziv,
+              pravniUcinak: tocka.pravni_ucinak,
+              glasanje: true,
+              zakljucak: tocka.opis,
+            })) || [],
+          brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0,
         }));
-        
-        console.log('Transformed sastanci:', transformedData);
+
+        console.log("Transformed sastanci:", transformedData);
         setSastanci(transformedData);
         setError(null);
       } catch (err) {
-        console.error('Error fetching sastanci:', err);
-        console.error('Error message:', err.message);
+        console.error("Error fetching sastanci:", err);
+        console.error("Error message:", err.message);
         setError(`Greška pri dohvaćanju sastanaka: ${err.message}`);
-        console.log('Using fallback data');
+        console.log("Using fallback data");
         setSastanci(sastanciDataFallback);
       } finally {
         setLoading(false);
@@ -184,14 +192,14 @@ function Sastanci({ category, userRole }) {
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("customSastanci") || "[]");
     if (Array.isArray(saved) && saved.length > 0) {
-      setSastanci(prev => [...prev, ...saved]);
+      setSastanci((prev) => [...prev, ...saved]);
     }
   }, []);
 
   const handleCheckboxChange = async (id, checked) => {
     try {
       await potvrdaSastanak(id, checked);
-      
+
       setPotvrde((prev) => {
         const current = sastanci.find((s) => s.id === id);
         const base = prev[id] ?? current?.brojPotvrdjenihSudjelovanja ?? 0;
@@ -201,8 +209,8 @@ function Sastanci({ category, userRole }) {
         };
       });
     } catch (err) {
-      console.error('Error confirming attendance:', err);
-      alert('Greška pri potvrđivanju dolaska');
+      console.error("Error confirming attendance:", err);
+      alert("Greška pri potvrđivanju dolaska");
     }
   };
 
@@ -213,27 +221,30 @@ function Sastanci({ category, userRole }) {
 
   const confirmObjava = async () => {
     setShowConfirm(false);
-    
+
     try {
-      const result = await changeSastanakStatus(selectedSastanakId, 'Objavljen');
-      
+      const result = await changeSastanakStatus(
+        selectedSastanakId,
+        "Objavljen"
+      );
+
       if (result.ok) {
-        setSastanci(prev => prev.map(s => 
-          s.id === selectedSastanakId 
-            ? { ...s, stanje: 'Objavljen' }
-            : s
-        ));
-        
+        setSastanci((prev) =>
+          prev.map((s) =>
+            s.id === selectedSastanakId ? { ...s, stanje: "Objavljen" } : s
+          )
+        );
+
         setShowToast(true);
         setTimeout(() => setShowToast(false), 3000);
       } else {
-        alert('Greška pri objavi sastanka');
+        alert("Greška pri objavi sastanka");
       }
     } catch (err) {
-      console.error('Error publishing meeting:', err);
-      alert('Greška pri objavi sastanka');
+      console.error("Error publishing meeting:", err);
+      alert("Greška pri objavi sastanka");
     }
-    
+
     setSelectedSastanakId(null);
   };
 
@@ -250,7 +261,7 @@ function Sastanci({ category, userRole }) {
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
 
       {loading && <p>Učitavanje sastanaka...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="okvirAS">
         {sastanci
@@ -280,7 +291,10 @@ function Sastanci({ category, userRole }) {
                     >
                       Uredi
                     </button>
-                    <button className="objaviBtn" onClick={() => handleObjaviClick(sastanak.id)}>
+                    <button
+                      className="objaviBtn"
+                      onClick={() => handleObjaviClick(sastanak.id)}
+                    >
                       Objavi
                     </button>
                     {showConfirm && selectedSastanakId === sastanak.id && (
@@ -353,7 +367,13 @@ function Sastanci({ category, userRole }) {
                 <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>🗓️</p>
                 <div className="vrijemeAS">
                   <p>
-                    {new Date(sastanak.vrijeme).toLocaleDateString("hr-HR")}
+                    <p>
+                      {new Date(sastanak.vrijeme).toLocaleDateString("hr-HR")}{" "}
+                      {new Date(sastanak.vrijeme).toLocaleTimeString("hr-HR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>  
                   </p>
                 </div>
                 <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>📍</p>
@@ -384,7 +404,6 @@ function Sastanci({ category, userRole }) {
           ))}
       </div>
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
-
     </div>
   );
 }
