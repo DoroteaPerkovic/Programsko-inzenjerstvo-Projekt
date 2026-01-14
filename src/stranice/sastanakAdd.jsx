@@ -33,7 +33,7 @@ function SastanakAdd() {
         try {
           setLoading(true);
           const data = await getSastanak(sastanakId);
-
+ 
           setForm({
             naslov: data.naslov,
             sazetak: data.sazetak,
@@ -279,10 +279,11 @@ function SastanakAdd() {
                       Poveži s diskusijom
                     </button>
                     {openDropdown === index && (
-                      <div>
+                      <div className="diskusije">
                         {diskusije.length > 0 ? (
-                          <select size={5} onChange={(e) => handleDiskusijaChange(index, e)}>
+                          <select onChange={(e) => handleDiskusijaChange(index, e)}>
                             <option value="">-- Odaberi diskusiju --</option>
+                              <option value="">Odustani</option>                            
                             {diskusije.map((diskusija, idx) => (
                               <option key={idx} value={diskusija.poveznica}>
                                 {diskusija.naslov} - {diskusija.pitanje}
@@ -295,7 +296,7 @@ function SastanakAdd() {
                       </div>
                     )}
                     {tocka.poveznica_diskusije && (
-                      <div>
+                      <div className="oznacenaDiskusija">
                         <small>Povezano: {tocka.poveznica_diskusije}</small>
                       </div>
                     )}
