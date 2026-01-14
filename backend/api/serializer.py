@@ -95,7 +95,7 @@ class StatusSastankaSerializer(serializers.ModelSerializer):
 class TockeDnevRedaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TockeDnevReda
-        fields = ['id_tocke', 'broj_tocke', 'naziv', 'opis', 'pravni_ucinak', 'id_sastanak']
+        fields = ['id_tocke', 'broj_tocke', 'naziv', 'opis', 'pravni_ucinak', 'glasanje', 'id_sastanak']
         read_only_fields = ['id_tocke']
 
 

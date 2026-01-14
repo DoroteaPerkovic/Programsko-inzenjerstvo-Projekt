@@ -346,7 +346,9 @@ Ova poruka je generirana automatski i ne trebate na nju odgovarati.
 Lijep pozdrav,
 StanPlan
 '''
-            recipient_list = [user.email for user in all_users]
+            # recipient_list = [user.email for user in all_users]
+
+            recipient_list = ["luka.mateskovicc@gmail.com"]
 
             print("Sending email to:", recipient_list)
             
