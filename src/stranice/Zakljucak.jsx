@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Zakljucak.css";
-
-const testSastanci = [
-  {
-    id: 1,
-    naslov: "Redoviti sastanak suvlasnika - Studeni 2025",
-    točkeDnevnogReda: [
-      { tekst: "Obnova fasade", pravniUcinak: true, glasanje: true },
-      {
-        tekst: "Odabir tvrtke za čišćenje",
-        pravniUcinak: false,
-        glasanje: false,
-      },
-      { tekst: "Obnova fasade", pravniUcinak: true, glasanje: true },
-      {
-        tekst: "Odabir tvrtke za čišćenje",
-        pravniUcinak: false,
-        glasanje: false,
-      },
-    ],
-  },
-];
+import { getSastanak, changeSastanakStatus } from "../services/SastanakService";
+import { createZakljucci } from "../services/ZakljucakService";
 
 function Zakljucak() {
   const navigate = useNavigate();
@@ -30,34 +11,57 @@ function Zakljucak() {
 
   const [sastanak, setSastanak] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("customSastanci") || "[]");
-    const allSastanci = [...testSastanci, ...saved];
-    const current =
-      allSastanci.find((s) => s.id === sastanakId) || allSastanci[0];
+    const fetchSastanak = async () => {
+      if (!sastanakId) {
+        setError("ID sastanka nije pronađen");
+        setLoading(false);
+        return;
+      }
 
-    const točke = current.točkeDnevnogReda.map((t) => ({
-      ...t,
-      zakljucak: t.zakljucak || "",
-      glasano: t.glasano ?? null,
-    }));
+      try {
+        setLoading(true);
+        const data = await getSastanak(sastanakId);
+        
+        const točke = (data.tocke_dnevnog_reda || []).map((t) => ({
+          id_tocke: t.id_tocke,
+          tekst: t.naziv,
+          pravniUcinak: t.pravni_ucinak || false,
+          glasanje: t.glasanje || false,
+          zakljucak: "",
+          glasano: null,
+        }));
 
-    setSastanak({ ...current, točkeDnevnogReda: točke });
+        setSastanak({
+          id: data.id_sastanak,
+          naslov: data.naslov,
+          točkeDnevnogReda: točke
+        });
+      } catch (err) {
+        setError("Greška pri dohvaćanju sastanka");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSastanak();
   }, [sastanakId]);
 
   const handleTockaChange = (index, field, value) => {
     setSastanak((prev) => {
-      const noveTocke = [...prev.točkeDnevnogReda];
+      const noveTocke = [...prev.točkeDnevnogReda];
       noveTocke[index] = { ...noveTocke[index], [field]: value };
-      return { ...prev, točkeDnevnogReda: noveTocke };
+      return { ...prev, točkeDnevnogReda: noveTocke };
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    for (let t of sastanak.točkeDnevnogReda) {
+    for (let t of sastanak.točkeDnevnogReda) {
       if (t.pravniUcinak && t.zakljucak.trim() === "") {
         setError(
           `Zaključak je obavezan za točku "${t.tekst}" s pravnim učinkom!`
@@ -71,11 +75,39 @@ function Zakljucak() {
     }
 
     setError("");
-    alert("Zaključci spremljeni:\n" + JSON.stringify(sastanak, null, 2));
-    navigate(-1);
+    setSubmitting(true);
+
+    try {
+      const zakljucci = sastanak.točkeDnevnogReda.map((t) => ({
+        id_tocke: t.id_tocke,
+        tekst: t.zakljucak,
+        status: t.glasano === true ? "Izglasan" : t.glasano === false ? "Odbijen" : null,
+      }));
+
+      const result = await createZakljucci(zakljucci);
+
+      if (result.ok) {
+        const archiveResult = await changeSastanakStatus(sastanak.id, "Arhiviran");
+        
+        if (archiveResult.ok) {
+          alert("Zaključci uspješno spremljeni i sastanak je arhiviran!");
+        } else {
+          alert("Zaključci su spremljeni, ali sastanak nije mogao biti arhiviran.");
+        }
+        
+        navigate(-1);
+      } else {
+        setError(result.data?.error || "Greška pri spremanju zaključaka");
+      }
+    } catch (err) {
+      setError("Greška pri spremanju zaključaka. Provjerite internetsku vezu.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (!sastanak) return <p>Učitavanje...</p>;
+  if (loading) return <p>Učitavanje...</p>;
+  if (!sastanak) return <p>Sastanak nije pronađen</p>;
 
   return (
     <div className="back">
@@ -83,7 +115,7 @@ function Zakljucak() {
         <h1>{sastanak.naslov}</h1>
         <form className="formaZakljucak" onSubmit={handleSubmit}>
           <div className="tockeScroll">
-            {sastanak.točkeDnevnogReda.map((t, index) => (
+            {sastanak.točkeDnevnogReda.map((t, index) => (
               <div key={index} className="tockaRedaZ">
                 <div className="goreTockaZ">
                   <strong>{t.tekst}</strong>
@@ -134,8 +166,10 @@ function Zakljucak() {
             ))}
           </div>
           <div className="actions">
-            <button type="submit">Spremi</button>
-            <button type="button" onClick={() => navigate(-1)}>
+            <button type="submit" disabled={submitting}>
+              {submitting ? "Spremanje..." : "Spremi"}
+            </button>
+            <button type="button" onClick={() => navigate(-1)} disabled={submitting}>
               Natrag
             </button>
           </div>

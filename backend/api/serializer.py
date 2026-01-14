@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Korisnik, Uloga, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje
+    Korisnik, Uloga, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje, Zakljucak
 )
 from .auth_backend import hash_password
 
@@ -160,3 +160,10 @@ class SudjelujeSerializer(serializers.ModelSerializer):
         model = Sudjeluje
         fields = ['id_sudjelovanja', 'vrijeme_potvrde', 'potvrda', 'id_korisnik', 'id_sastanak']
         read_only_fields = ['id_sudjelovanja', 'vrijeme_potvrde']
+
+
+class ZakljucakSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Zakljucak
+        fields = ['id_zakljucak', 'tekst', 'status', 'unesen_u', 'id_korisnik', 'id_tocke']
+        read_only_fields = ['id_zakljucak', 'unesen_u']
