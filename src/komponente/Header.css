@@ -52,7 +52,7 @@
     max-height: 7vh;
 }
 
-.lijevo {
+.lijevoHeader {
     flex: 1;
     max-width: 12vh;
     background-color: transparent;
