@@ -192,10 +192,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
-# You should replace this with your actual Google Client ID
-# It's recommended to load this from environment variables for security
 GOOGLE_CLIENT_ID = '826648226919-fpclgpuee5fhdrdb6mas7fevhkkjq2lr.apps.googleusercontent.com'
 
 SOCIALACCOUNT_STORE_TOKENS = True
 
 SOCIALACCOUNT_ADAPTER = 'api.adapters.MySocialAccountAdapter'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'nexifyp8@gmail.com'  
+EMAIL_HOST_PASSWORD = 'ekyukujntizlfljk'    
+
+
