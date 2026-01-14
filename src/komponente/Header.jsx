@@ -55,7 +55,7 @@ function Header({ onSelectcategory }) {
       <div className="Headerbox">
         <div className="gornji"></div>
         <div className="doljnji">
-          <div className="lijevo"></div>
+          <div className="lijevoHeader"></div>
           <div className="desno1"></div>
           <div
             className="desno2"

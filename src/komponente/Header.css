@@ -52,14 +52,14 @@
     max-height: 7vh;
 }
 
-.lijevo {
+.lijevoHeader {
     flex: 1;
     max-width: 12vh;
     background-color: transparent;
 }
 
 .desno1 {
-    flex: 7;
+    flex: 8;
     text-align: end;
     background-color: rgb(55, 52, 53);
 }
