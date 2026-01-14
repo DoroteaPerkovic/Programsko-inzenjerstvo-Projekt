@@ -16,6 +16,7 @@ driver.get("https://programsko-inzenjerstvo-projekt-1.onrender.com")
 wait = WebDriverWait(driver, 10)
 
 try:
+    #prijava
     username = wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
     username.send_keys("stanar")
 
@@ -28,21 +29,21 @@ try:
     )
 
     if "/suvlasnici" in driver.current_url:
-        test_pass("Prijava uspješna (suvlasnik)")
+        test_pass("Prijava uspješna ")
     else:
         test_fail("Neuspješna prijava ili kriva ruta nakon prijave")
-    
+    #odlazak na profil
     profil_link = wait.until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "a[href='/profil']"))
     )
     profil_link.click()
-
+    #odjava
     wait.until(
         EC.element_to_be_clickable((By.XPATH, "//button[text()='Odjavi se']"))
     ).click()
 
     wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
-    test_pass("Odjava uspješna - login forma ponovno vidljiva")
+    test_pass("Odjava uspješna - login ponovno vidljiv")
 
 except Exception as e:
     test_fail(f"Test prekinut zbog greške: {e}")

@@ -16,6 +16,7 @@ driver.get("https://programsko-inzenjerstvo-projekt-1.onrender.com")
 wait = WebDriverWait(driver, 10)
 
 try:
+    #pokušavamo upisati krivu lozinku, namjerno izazivanje greske
     username = wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
     password = wait.until(EC.visibility_of_element_located((By.ID, "password")))
 

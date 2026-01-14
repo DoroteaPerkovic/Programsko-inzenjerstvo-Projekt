@@ -18,7 +18,12 @@ function SastanakAdd() {
     vrijeme: "",
     mjesto: "",
     tockeDnevnogReda: [
-      { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
+      {
+        tekst: "",
+        pravniUcinak: false,
+        potrebnoGlasanje: false,
+        poveznica_diskusije: "",
+      },
     ],
   });
 
@@ -33,7 +38,7 @@ function SastanakAdd() {
         try {
           setLoading(true);
           const data = await getSastanak(sastanakId);
- 
+
           setForm({
             naslov: data.naslov,
             sazetak: data.sazetak,
@@ -45,8 +50,13 @@ function SastanakAdd() {
               potrebnoGlasanje: t.glasanje || false,
               poveznica_diskusije: t.poveznica_diskusije || "",
             })) || [
-                { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
-              ],
+              {
+                tekst: "",
+                pravniUcinak: false,
+                potrebnoGlasanje: false,
+                poveznica_diskusije: "",
+              },
+            ],
           });
         } catch (err) {
           console.error("Error fetching sastanak:", err);
@@ -76,7 +86,12 @@ function SastanakAdd() {
       ...prev,
       tockeDnevnogReda: [
         ...prev.tockeDnevnogReda,
-        { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
+        {
+          tekst: "",
+          pravniUcinak: false,
+          potrebnoGlasanje: false,
+          poveznica_diskusije: "",
+        },
       ],
     }));
 
@@ -177,7 +192,9 @@ function SastanakAdd() {
   return (
     <div className="back">
       <div className="dodavanjeOkvir">
-        <h1 className="naslov">{sastanakId ? "Uredi sastanak" : "Novi sastanak"}</h1>
+        <h1 className="naslov">
+          {sastanakId ? "Uredi sastanak" : "Novi sastanak"}
+        </h1>
         {loading && <p>Učitavanje...</p>}
         <form className="formaDodaj" onSubmit={handleSubmit}>
           <div className="desno">
@@ -243,8 +260,9 @@ function SastanakAdd() {
                   <div className="doleTocka">
                     <button
                       type="button"
-                      className={`button2 ${tocka.pravniUcinak ? "active" : ""
-                        }`}
+                      className={`button2 ${
+                        tocka.pravniUcinak ? "active" : ""
+                      }`}
                       onClick={() =>
                         handleTockaChange(
                           index,
@@ -258,8 +276,9 @@ function SastanakAdd() {
 
                     <button
                       type="button"
-                      className={`button2 ${tocka.potrebnoGlasanje ? "active" : ""
-                        }`}
+                      className={`button2 ${
+                        tocka.potrebnoGlasanje ? "active" : ""
+                      }`}
                       onClick={() =>
                         handleTockaChange(
                           index,
@@ -281,9 +300,11 @@ function SastanakAdd() {
                     {openDropdown === index && (
                       <div className="diskusije">
                         {diskusije.length > 0 ? (
-                          <select onChange={(e) => handleDiskusijaChange(index, e)}>
+                          <select
+                            onChange={(e) => handleDiskusijaChange(index, e)}
+                          >
                             <option value="">-- Odaberi diskusiju --</option>
-                              <option value="">Odustani</option>                            
+                            <option value="">Odustani</option>
                             {diskusije.map((diskusija, idx) => (
                               <option key={idx} value={diskusija.poveznica}>
                                 {diskusija.naslov} - {diskusija.pitanje}
@@ -297,7 +318,16 @@ function SastanakAdd() {
                     )}
                     {tocka.poveznica_diskusije && (
                       <div className="oznacenaDiskusija">
-                        <small>Povezano: {tocka.poveznica_diskusije}</small>
+                        <small>    
+                          {(() => {
+                            const diskusija = diskusije.find(
+                              (d) => d.poveznica === tocka.poveznica_diskusije
+                            );
+                            return diskusija
+                              ? `${diskusija.naslov} - ${diskusija.pitanje}`
+                              : tocka.poveznica_diskusije;
+                          })()}
+                        </small>{" "}
                       </div>
                     )}
                   </div>

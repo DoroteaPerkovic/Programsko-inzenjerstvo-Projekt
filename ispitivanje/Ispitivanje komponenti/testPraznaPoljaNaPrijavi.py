@@ -21,7 +21,7 @@ try:
     
     username.send_keys("stanar")
 
-
+    #namjerno ostavljamo prazno
     password = driver.find_element(By.ID, "password")
     password.send_keys(Keys.ENTER)
 
@@ -31,7 +31,7 @@ try:
         )
         test_fail("Prazna polja: neočekivano ulogiran korisnik")
     except:
-        test_pass("Prazna polja: korisnik nije ulogiran (nema dashboarda)")
+        test_pass("Prazna polja: korisnik nije ulogiran")
 
     current_url = driver.current_url
     if "/suvlasnici" in current_url:

@@ -65,6 +65,12 @@ try:
     wait.until(
         EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
     ).click()
+    
+    error_msg = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located(
+            (By.XPATH, "//p[contains(text(), 'Lozinka je uspješno promijenjena.')]")
+        )
+    )
 
     test_pass("Lozinka promijenjena")
     

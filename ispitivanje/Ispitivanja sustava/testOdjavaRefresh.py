@@ -16,6 +16,8 @@ driver.get("https://programsko-inzenjerstvo-projekt-1.onrender.com")
 wait = WebDriverWait(driver, 10)
 
 try:
+    #prijava u sustav
+    
     username = wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
     username.send_keys("stanar")
 
@@ -26,23 +28,23 @@ try:
     WebDriverWait(driver, 15).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "okvirAS"))
     )
-
+    #odlazak na profil
     profil_link = wait.until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "a[href='/profil']"))
     )
     profil_link.click()
-
+    #odjava
     wait.until(
         EC.element_to_be_clickable((By.XPATH, "//button[text()='Odjavi se']"))
     ).click()
 
     wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
     test_pass("Odjava uspješna - login forma vidljiva")
-
+    #tu pokusavamo refresh
     driver.refresh()
 
     wait.until(EC.visibility_of_element_located((By.ID, "usernameOrEmail")))
-    test_pass("Nakon refresh-a korisnik ostaje odjavljen (login forma)")
+    test_pass("Nakon refresh-a korisnik ostaje odjavljen ")
 
 except Exception as e:
     test_fail(f"Test prekinut zbog greške: {e}")

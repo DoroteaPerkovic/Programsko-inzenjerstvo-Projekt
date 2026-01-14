@@ -239,6 +239,7 @@ body {
   gap: 8px;
   padding-right: 4px;
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .tdrContainer::-webkit-scrollbar {

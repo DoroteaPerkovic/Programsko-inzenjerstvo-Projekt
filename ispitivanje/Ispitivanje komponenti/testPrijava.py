@@ -25,8 +25,8 @@ dashboard = WebDriverWait(driver, 15).until(
 
 current_url = driver.current_url
 if "/suvlasnici" in current_url:
-    print("Prijava uspješna i preusmjerenje na /suvlasnici")
+    print("PASS: Prijava uspješna i preusmjerenje na /suvlasnici")
 else:
-    print("Krivo preusmjerenje nakon prijave")
+    print("FAIL: Krivo preusmjerenje nakon prijave")
 
 driver.quit()

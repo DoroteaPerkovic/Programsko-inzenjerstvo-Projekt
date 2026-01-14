@@ -25,7 +25,6 @@ try:
     password.send_keys("stanar123")
     password.send_keys(Keys.ENTER)
 
-    # čekamo da se učita stranica (okvirAS)
     WebDriverWait(driver, 15).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "okvirAS"))
     )
@@ -43,20 +42,33 @@ try:
     )
     test_pass("Hover menu otvoren")
 
-    # provjera da SUVLASNIK nema "Planirani" u izborniku
+    # provjera da suvlasnik nema "Planirani" u izborniku
     try:
         driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Planirani')]")
-        test_fail("Suvlasnik vidi 'Planirani' u meniju (ne bi smio)")
+        test_fail("Suvlasnik vidi 'Planirani' u meniju ")
     except:
-        test_pass("Suvlasnik ne vidi 'Planirani' u meniju (ispravno)")
-
-    # dodatno: provjera da suvlasnik vidi objavljeni i arhivirani (opcionalno, ali korisno)
+        test_pass("Suvlasnik ne vidi 'Planirani' u meniju ")
+        
+    # provjera da suvlasnik nema "Obavljeni" u izborniku
     try:
-        driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Objavljeni')]")
-        driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Arhivirani')]")
-        test_pass("Suvlasnik vidi 'Objavljeni' i 'Arhivirani' u meniju (ispravno)")
+        driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Obavljeni')]")
+        test_fail("Suvlasnik vidi 'Obavljeni' u meniju ")
     except:
-        test_fail("Suvlasnik ne vidi očekivane stavke ('Objavljeni', 'Arhivirani')")
+        test_pass("Suvlasnik ne vidi 'Obavljeni' u meniju ")
+    
+     # provjera da suvlasnik nema "Novi sastanak" u izborniku
+    try:
+        driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Novi sastanak')]")
+        test_fail("Suvlasnik vidi 'Novi sastanak' u meniju ")
+    except:
+        test_pass("Suvlasnik ne vidi 'Novi sastanak' u meniju ")
+        
+    # provjera da suvlasnik nema "Dodavanje korisnika" u izborniku
+    try:
+        driver.find_element(By.XPATH, "//div[@class='Menu']//li[contains(text(), 'Dodavanje korisnika')]")
+        test_fail("Suvlasnik vidi 'Dodavanje korisnika' u meniju ")
+    except:
+        test_pass("Suvlasnik ne vidi 'Dodavanje korisnika' u meniju ")
 
 except Exception as e:
     test_fail(f"Test prekinut zbog greške: {e}")

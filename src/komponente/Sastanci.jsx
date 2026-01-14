@@ -179,7 +179,7 @@ function Sastanci({ category, userRole }) {
       </h1>
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
 
-      {loading && <p>Učitavanje sastanaka...</p>}
+      {loading && <p style={{color:"black"}}>Učitavanje sastanaka...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="okvirAS">
