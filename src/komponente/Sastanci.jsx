@@ -61,6 +61,7 @@ function Sastanci({ category, userRole }) {
               naziv: tocka.naziv,
               pravniUcinak: tocka.pravni_ucinak,
               glasanje: tocka.glasanje || false,
+              poveznica_diskusije: tocka.poveznica_diskusije || "",
               zakljucak: tocka.opis,
             })) || [],
           brojPotvrdjenihSudjelovanja: sastanak.broj_potvrdenih || 0,
@@ -284,6 +285,18 @@ function Sastanci({ category, userRole }) {
                           {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
                           {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
                         </div>
+                        {toc.poveznica_diskusije && (
+                          <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
+                            <a 
+                              href={toc.poveznica_diskusije} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              style={{ color: "#007bff", textDecoration: "underline" }}
+                            >
+                              🔗 Povezana diskusija
+                            </a>
+                          </div>
+                        )}
                         {sastanak.stanje === "Arhiviran" && (
                           <div className="zaklj">
                             <strong>Zaključak:</strong>{" "}
