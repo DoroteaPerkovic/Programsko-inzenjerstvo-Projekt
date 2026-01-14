@@ -45,8 +45,8 @@ function SastanakAdd() {
               potrebnoGlasanje: t.glasanje || false,
               poveznica_diskusije: t.poveznica_diskusije || "",
             })) || [
-              { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
-            ],
+                { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
+              ],
           });
         } catch (err) {
           console.error("Error fetching sastanak:", err);
@@ -177,7 +177,7 @@ function SastanakAdd() {
   return (
     <div className="back">
       <div className="dodavanjeOkvir">
-        <h1>{sastanakId ? "Uredi sastanak" : "Novi sastanak"}</h1>
+        <h1 className="naslov">{sastanakId ? "Uredi sastanak" : "Novi sastanak"}</h1>
         {loading && <p>Učitavanje...</p>}
         <form className="formaDodaj" onSubmit={handleSubmit}>
           <div className="desno">
@@ -243,9 +243,8 @@ function SastanakAdd() {
                   <div className="doleTocka">
                     <button
                       type="button"
-                      className={`button2 ${
-                        tocka.pravniUcinak ? "active" : ""
-                      }`}
+                      className={`button2 ${tocka.pravniUcinak ? "active" : ""
+                        }`}
                       onClick={() =>
                         handleTockaChange(
                           index,
@@ -259,9 +258,8 @@ function SastanakAdd() {
 
                     <button
                       type="button"
-                      className={`button2 ${
-                        tocka.potrebnoGlasanje ? "active" : ""
-                      }`}
+                      className={`button2 ${tocka.potrebnoGlasanje ? "active" : ""
+                        }`}
                       onClick={() =>
                         handleTockaChange(
                           index,
