@@ -13,7 +13,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.views import APIView
+from django.conf import settings
 from django.utils import timezone
+from django.core.mail import send_mail
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -316,10 +318,49 @@ def sastanak_change_status(request, pk):
         )
     
     try:
+        if sastanak.id_status.naziv_status == new_status_name:
+            serializer = SastanakSerializer(sastanak)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         new_status = StatusSastanka.objects.get(naziv_status=new_status_name)
         sastanak.id_status = new_status
         sastanak.save()
         
+        if new_status_name == 'Objavljen':
+            all_users = Korisnik.objects.filter(aktivan=True)
+            subject = f'Novi sastanak objavljen: {sastanak.naslov}'
+            message = f'''
+Poštovani,
+
+Novi sastanak je objavljen i sada je dostupan za pregled.
+
+Detalji sastanka:
+Naslov: {sastanak.naslov}
+Datum i vrijeme: {sastanak.datum_vrijeme.strftime('%d.%m.%Y. u %H:%Mh')}
+Lokacija: {sastanak.lokacija}
+
+Molimo vas da potvrdite svoj dolazak.
+
+Ova poruka je generirana automatski i ne trebate na nju odgovarati.
+
+Lijep pozdrav,
+StanPlan
+'''
+            recipient_list = [user.email for user in all_users]
+
+            print("Sending email to:", recipient_list)
+            
+            try:
+                send_mail(
+                    subject,
+                    message, 
+                    settings.EMAIL_HOST_USER,
+                    recipient_list,
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error sending email: {e}")
+
         serializer = SastanakSerializer(sastanak)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except StatusSastanka.DoesNotExist:

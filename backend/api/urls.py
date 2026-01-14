@@ -13,7 +13,6 @@ urlpatterns = [
     path('create-user-admin/', create_user_by_admin, name='create_user_by_admin'),
     path('change-password/', ChangePasswordView.as_view(), name='change-password'),
     
-    # Meeting endpoints
     path('sastanci/', sastanci_list_create, name='sastanci_list_create'),
     path('sastanci/<int:pk>/', sastanak_detail, name='sastanak_detail'),
     path('sastanci/<int:pk>/potvrda/', sastanak_potvrda, name='sastanak_potvrda'),
