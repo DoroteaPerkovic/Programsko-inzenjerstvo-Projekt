@@ -125,6 +125,7 @@ class TockeDnevReda(models.Model):
     naziv = models.CharField(max_length=200)
     opis = models.TextField(blank=True, null=True)
     pravni_ucinak = models.BooleanField(default=False)
+    glasanje = models.BooleanField(default=False)
     id_sastanak = models.ForeignKey(Sastanak, on_delete=models.CASCADE, null=True, db_column='id_sastanak')
 
     class Meta:

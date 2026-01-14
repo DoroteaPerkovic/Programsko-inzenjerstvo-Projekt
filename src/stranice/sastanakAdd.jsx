@@ -40,7 +40,7 @@ function SastanakAdd() {
             tockeDnevnogReda: data.tocke_dnevnog_reda?.map((t) => ({
               tekst: t.naziv,
               pravniUcinak: t.pravni_ucinak || false,
-              potrebnoGlasanje: true,
+              potrebnoGlasanje: t.glasanje || false,
             })) || [
               { tekst: "", pravniUcinak: false, potrebnoGlasanje: false },
             ],
@@ -103,7 +103,6 @@ function SastanakAdd() {
       return;
     }
 
-    // Prepare data for API
     const sastanakData = {
       naslov: form.naslov,
       sazetak: form.sazetak,
@@ -114,6 +113,7 @@ function SastanakAdd() {
         naziv: tocka.tekst,
         opis: "",
         pravni_ucinak: tocka.pravniUcinak,
+        glasanje: tocka.potrebnoGlasanje,
       })),
     };
 
@@ -122,10 +122,8 @@ function SastanakAdd() {
       let result;
 
       if (sastanakId) {
-        // Update existing meeting
         result = await updateSastanak(sastanakId, sastanakData);
       } else {
-        // Create new meeting
         result = await createSastanak(sastanakData);
       }
 
