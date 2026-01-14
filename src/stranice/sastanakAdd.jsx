@@ -18,12 +18,14 @@ function SastanakAdd() {
     vrijeme: "",
     mjesto: "",
     tockeDnevnogReda: [
-      { tekst: "", pravniUcinak: false, potrebnoGlasanje: false },
+      { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
     ],
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [diskusije, setDiskusije] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   useEffect(() => {
     const fetchSastanak = async () => {
@@ -41,8 +43,9 @@ function SastanakAdd() {
               tekst: t.naziv,
               pravniUcinak: t.pravni_ucinak || false,
               potrebnoGlasanje: t.glasanje || false,
+              poveznica_diskusije: t.poveznica_diskusije || "",
             })) || [
-              { tekst: "", pravniUcinak: false, potrebnoGlasanje: false },
+              { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
             ],
           });
         } catch (err) {
@@ -73,9 +76,39 @@ function SastanakAdd() {
       ...prev,
       tockeDnevnogReda: [
         ...prev.tockeDnevnogReda,
-        { tekst: "", pravniUcinak: false, potrebnoGlasanje: false },
+        { tekst: "", pravniUcinak: false, potrebnoGlasanje: false, poveznica_diskusije: "" },
       ],
     }));
+
+  const fetchDiskusije = async () => {
+    try {
+      const response = await fetch(
+        "https://f18d2259-cbd6-4cda-b632-383992fbefa5.mock.pstmn.io/api/fetch-positive-outcome-discussions"
+      );
+      const data = await response.json();
+      setDiskusije(data);
+    } catch (err) {
+      console.error("Error fetching discussions:", err);
+      setError("Greška pri dohvaćanju diskusija");
+    }
+  };
+
+  const toggleDropdown = async (index) => {
+    if (openDropdown === index) {
+      setOpenDropdown(null);
+    } else {
+      if (diskusije.length === 0) {
+        await fetchDiskusije();
+      }
+      setOpenDropdown(index);
+    }
+  };
+
+  const handleDiskusijaChange = (index, e) => {
+    const selectedPoveznica = e.target.value;
+    handleTockaChange(index, "poveznica_diskusije", selectedPoveznica);
+    setOpenDropdown(null);
+  };
 
   const ukloniTocku = (index) => {
     if (form.tockeDnevnogReda.length === 1) return;
@@ -114,6 +147,7 @@ function SastanakAdd() {
         opis: "",
         pravni_ucinak: tocka.pravniUcinak,
         glasanje: tocka.potrebnoGlasanje,
+        poveznica_diskusije: tocka.poveznica_diskusije || "",
       })),
     };
 
@@ -238,6 +272,35 @@ function SastanakAdd() {
                     >
                       Glasanje
                     </button>
+
+                    <button
+                      type="button"
+                      className="button2"
+                      onClick={() => toggleDropdown(index)}
+                    >
+                      Poveži s diskusijom
+                    </button>
+                    {openDropdown === index && (
+                      <div>
+                        {diskusije.length > 0 ? (
+                          <select size={5} onChange={(e) => handleDiskusijaChange(index, e)}>
+                            <option value="">-- Odaberi diskusiju --</option>
+                            {diskusije.map((diskusija, idx) => (
+                              <option key={idx} value={diskusija.poveznica}>
+                                {diskusija.naslov} - {diskusija.pitanje}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <p>Učitavanje diskusija...</p>
+                        )}
+                      </div>
+                    )}
+                    {tocka.poveznica_diskusije && (
+                      <div>
+                        <small>Povezano: {tocka.poveznica_diskusije}</small>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
