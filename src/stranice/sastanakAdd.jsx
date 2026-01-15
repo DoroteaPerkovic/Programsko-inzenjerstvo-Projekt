@@ -157,6 +157,7 @@ function SastanakAdd() {
       datum_vrijeme: form.vrijeme,
       lokacija: form.mjesto,
       tocke_dnevnog_reda: prazneTocke.map((tocka, index) => ({
+        ...( !sastanakId && { broj_tocke: index + 1 } ),
         naziv: tocka.tekst,
         opis: "",
         pravni_ucinak: tocka.pravniUcinak,
