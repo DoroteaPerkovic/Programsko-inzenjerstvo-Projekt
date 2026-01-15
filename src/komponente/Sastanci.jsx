@@ -6,6 +6,7 @@ import {
   potvrdaSastanak,
   changeSastanakStatus,
 } from "../services/SastanakService";
+import { getZakljucciBySastanak } from "../services/ZakljucakService";
 
 const parseLocalDateTime = (dt) => {
   if (!dt) return null;
@@ -23,6 +24,7 @@ function Sastanci({ category, userRole }) {
   const [sastanci, setSastanci] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [zakljucciData, setZakljucciData] = useState({});
   const navigate = useNavigate();
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
@@ -58,6 +60,7 @@ function Sastanci({ category, userRole }) {
           stanje: sastanak.status?.naziv_status || "Planiran",
           tockeDnevnogReda:
             sastanak.tocke_dnevnog_reda?.map((tocka) => ({
+              id_tocke: tocka.id_tocke,
               naziv: tocka.naziv,
               pravniUcinak: tocka.pravni_ucinak,
               glasanje: tocka.glasanje || false,
@@ -90,6 +93,28 @@ function Sastanci({ category, userRole }) {
       setSastanci((prev) => [...prev, ...saved]);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchZakljucci = async () => {
+      const arhiviraniSastanci = sastanci.filter(s => s.stanje === "Arhiviran");
+      
+      for (const sastanak of arhiviraniSastanci) {
+        try {
+          const zakljucci = await getZakljucciBySastanak(sastanak.id);
+          setZakljucciData(prev => ({
+            ...prev,
+            [sastanak.id]: zakljucci
+          }));
+        } catch (err) {
+          console.error(`Error fetching zakljucci for sastanak ${sastanak.id}:`, err);
+        }
+      }
+    };
+
+    if (sastanci.length > 0) {
+      fetchZakljucci();
+    }
+  }, [sastanci]);
 
   const handleCheckboxChange = async (id, checked) => {
     try {
@@ -279,32 +304,45 @@ function Sastanci({ category, userRole }) {
                     Točke dnevnog reda
                   </p>
                   <ul>
-                    {(sastanak.tockeDnevnogReda || []).map((toc, idx) => (
-                      <li key={idx}>
-                        <div>
-                          {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
-                          {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
-                        </div>
-                        {toc.poveznica_diskusije && (
-                          <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
-                            <a 
-                              href={toc.poveznica_diskusije} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              style={{ color: "#007bff", textDecoration: "underline" }}
-                            >
-                              🔗 Povezana diskusija
-                            </a>
+                    {(sastanak.tockeDnevnogReda || []).map((toc, idx) => {
+                      const tockaZakljucci = zakljucciData[sastanak.id]?.find(
+                        z => z.id_tocke === toc.id_tocke
+                      );
+                      const zakljucakTekst = tockaZakljucci?.zakljucci?.[0]?.tekst;
+                      const zakljucakStatus = tockaZakljucci?.zakljucci?.[0]?.status;
+                      
+                      return (
+                        <li key={idx}>
+                          <div>
+                            {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
+                            {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
                           </div>
-                        )}
-                        {sastanak.stanje === "Arhiviran" && (
-                          <div className="zaklj">
-                            <strong>Zaključak:</strong>{" "}
-                            {toc.zakljucak || "Zaključak nije unesen."}
-                          </div>
-                        )}
-                      </li>
-                    ))}
+                          {toc.poveznica_diskusije && (
+                            <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
+                              <a 
+                                href={toc.poveznica_diskusije} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{ color: "#007bff", textDecoration: "underline" }}
+                              >
+                                🔗 Povezana diskusija
+                              </a>
+                            </div>
+                          )}
+                          {sastanak.stanje === "Arhiviran" && (
+                            <div className="zaklj">
+                              <strong>Zaključak:</strong>{" "}
+                              {zakljucakTekst || "Zaključak nije unesen."}
+                              {zakljucakStatus && (
+                                <span style={{ marginLeft: "10px", fontStyle: "italic", color: zakljucakStatus === "Izglasan" ? "green" : "red" }}>
+                                  ({zakljucakStatus})
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>🗓️</p>

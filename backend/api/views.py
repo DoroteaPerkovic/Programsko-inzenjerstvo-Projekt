@@ -3,10 +3,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Korisnik, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje
+from .models import Korisnik, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje, Zakljucak
 from .serializer import (
     RegisterSerializer, ChangePasswordSerializer, 
-    SastanakSerializer, SudjelujeSerializer
+    SastanakSerializer, SudjelujeSerializer, ZakljucakSerializer
 )
 from .auth_backend import verify_password, hash_password
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -370,3 +370,126 @@ StanPlan
             {'error': f'Status "{new_status_name}" ne postoji.'},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_zakljucci(request):
+    """
+    POST: Create multiple conclusions (zakljucci) at once
+    Expected data format:
+    [
+        {
+            "id_tocke": 1,
+            "tekst": "Zaključak tekst",
+            "status": "Izglasan" or "Odbijen" or null
+        },
+        ...
+    ]
+    """
+    korisnik = request.user
+    
+    if not isinstance(korisnik, Korisnik):
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+    
+    zakljucci_data = request.data
+    
+    if not isinstance(zakljucci_data, list):
+        return Response(
+            {'error': 'Očekivana je lista zaključaka.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    created_zakljucci = []
+    errors = []
+    
+    for zakljucak_data in zakljucci_data:
+        # Skip if tekst is empty or None
+        if not zakljucak_data.get('tekst') or zakljucak_data.get('tekst').strip() == '':
+            continue
+            
+        # Add the current user's ID
+        zakljucak_data['id_korisnik'] = korisnik.id_korisnik
+        
+        # Verify that the tocka exists
+        id_tocke = zakljucak_data.get('id_tocke')
+        if not id_tocke:
+            errors.append({'error': 'id_tocke je obavezan', 'data': zakljucak_data})
+            continue
+            
+        try:
+            tocka = TockeDnevReda.objects.get(pk=id_tocke)
+        except TockeDnevReda.DoesNotExist:
+            errors.append({'error': f'Točka s ID {id_tocke} ne postoji', 'data': zakljucak_data})
+            continue
+        
+        serializer = ZakljucakSerializer(data=zakljucak_data)
+        if serializer.is_valid():
+            zakljucak = serializer.save()
+            created_zakljucci.append(serializer.data)
+        else:
+            errors.append({'error': serializer.errors, 'data': zakljucak_data})
+    
+    if errors and not created_zakljucci:
+        return Response(
+            {'error': 'Niti jedan zaključak nije kreiran', 'details': errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    response_data = {
+        'created': created_zakljucci,
+        'count': len(created_zakljucci)
+    }
+    
+    if errors:
+        response_data['errors'] = errors
+    
+    return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_zakljucci_by_sastanak(request, sastanak_id):
+    """
+    GET: Get all conclusions for a specific meeting
+    Returns conclusions grouped by agenda items
+    """
+    try:
+        sastanak = Sastanak.objects.get(pk=sastanak_id)
+    except Sastanak.DoesNotExist:
+        return Response({'error': 'Sastanak ne postoji.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Get all agenda items (tocke) for this meeting
+    tocke = TockeDnevReda.objects.filter(id_sastanak=sastanak).order_by('broj_tocke')
+    
+    result = []
+    for tocka in tocke:
+        # Get conclusions for this tocka
+        zakljucci = Zakljucak.objects.filter(id_tocke=tocka).order_by('-unesen_u')
+        zakljucci_data = ZakljucakSerializer(zakljucci, many=True).data
+        
+        result.append({
+            'id_tocke': tocka.id_tocke,
+            'broj_tocke': tocka.broj_tocke,
+            'naziv': tocka.naziv,
+            'zakljucci': zakljucci_data
+        })
+    
+    return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_zakljucci_by_tocka(request, tocka_id):
+    """
+    GET: Get all conclusions for a specific agenda item (tocka)
+    """
+    try:
+        tocka = TockeDnevReda.objects.get(pk=tocka_id)
+    except TockeDnevReda.DoesNotExist:
+        return Response({'error': 'Točka dnevnog reda ne postoji.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    zakljucci = Zakljucak.objects.filter(id_tocke=tocka).order_by('-unesen_u')
+    serializer = ZakljucakSerializer(zakljucci, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
