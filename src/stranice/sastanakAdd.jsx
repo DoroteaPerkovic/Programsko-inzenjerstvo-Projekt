@@ -42,7 +42,7 @@ function SastanakAdd() {
           setForm({
             naslov: data.naslov,
             sazetak: data.sazetak,
-            vrijeme: data.datum_vrijeme,
+            vrijeme: data.datum_vrijeme ? data.datum_vrijeme.slice(0, 16) : "",
             mjesto: data.lokacija,
             tockeDnevnogReda: data.tocke_dnevnog_reda?.map((t) => ({
               tekst: t.naziv,
@@ -157,7 +157,6 @@ function SastanakAdd() {
       datum_vrijeme: form.vrijeme,
       lokacija: form.mjesto,
       tocke_dnevnog_reda: prazneTocke.map((tocka, index) => ({
-        broj_tocke: index + 1,
         naziv: tocka.tekst,
         opis: "",
         pravni_ucinak: tocka.pravniUcinak,
@@ -221,7 +220,7 @@ function SastanakAdd() {
                 type="datetime-local"
                 value={form.vrijeme}
                 onChange={handleChange("vrijeme")}
-                required
+                required = {!sastanakId}
                 min={new Date().toISOString().slice(0, 16)}
               />
             </label>
