@@ -342,7 +342,7 @@ def send_email(to_emails, subject, content):
 
     headers = {
         "accept": "application/json",
-        "api-key": "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",
+        "api-key": settings.BREVO_API_KEY,
         "content-type": "application/json"
     }
 
