@@ -44,6 +44,7 @@ def sastanak_iz_diskusije(request):
         napravljen_od=timezone.now(),
         id_korisnik=predstavnik,
         id_status=status_obavljen,
+        iz_diskusije=True,
     )
 
     TockeDnevReda.objects.create(

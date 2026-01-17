@@ -79,6 +79,7 @@ class Sastanak(models.Model):
     sazetak = models.TextField(blank=True, null=True)
     id_korisnik = models.ForeignKey(Korisnik, on_delete=models.SET_NULL, null=True, db_column='id_korisnik', related_name='sastanci')
     id_status = models.ForeignKey(StatusSastanka, on_delete=models.SET_NULL, null=True, db_column='id_status')
+    iz_diskusije = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'sastanak'

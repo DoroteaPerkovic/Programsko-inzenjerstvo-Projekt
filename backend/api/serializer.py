@@ -116,7 +116,7 @@ class SastanakSerializer(serializers.ModelSerializer):
         model = Sastanak
         fields = ['id_sastanak', 'naslov', 'napravljen_od', 'lokacija', 
                   'datum_vrijeme', 'sazetak', 'id_korisnik', 'id_status', 
-                  'status', 'korisnik_ime', 'tocke_dnevnog_reda', 'broj_potvrdenih']
+                  'status', 'korisnik_ime', 'tocke_dnevnog_reda', 'broj_potvrdenih', 'iz_diskusije']
         read_only_fields = ['id_sastanak', 'napravljen_od']
 
     def get_broj_potvrdenih(self, obj):
