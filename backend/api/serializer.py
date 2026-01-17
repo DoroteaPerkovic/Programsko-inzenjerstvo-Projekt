@@ -99,6 +99,13 @@ class TockeDnevRedaSerializer(serializers.ModelSerializer):
         read_only_fields = ['id_tocke']
 
 
+class SastanakIzDiskusijeSerializer(serializers.Serializer):
+    naslov = serializers.CharField(max_length=200)
+    termin = serializers.DateTimeField()
+    tocka_dnevnog_reda = serializers.CharField(max_length=200)
+    cilj_sastanka = serializers.CharField(max_length=500)
+
+
 class SastanakSerializer(serializers.ModelSerializer):
     tocke_dnevnog_reda = TockeDnevRedaSerializer(many=True, required=False, write_only=True)
     status = StatusSastankaSerializer(source='id_status', read_only=True)
