@@ -99,6 +99,13 @@ class TockeDnevRedaSerializer(serializers.ModelSerializer):
         read_only_fields = ['id_tocke']
 
 
+class SastanakIzDiskusijeSerializer(serializers.Serializer):
+    naslov = serializers.CharField(max_length=200)
+    termin = serializers.DateTimeField()
+    tocka_dnevnog_reda = serializers.CharField(max_length=200)
+    cilj_sastanka = serializers.CharField(max_length=500)
+
+
 class SastanakSerializer(serializers.ModelSerializer):
     tocke_dnevnog_reda = TockeDnevRedaSerializer(many=True, required=False, write_only=True)
     status = StatusSastankaSerializer(source='id_status', read_only=True)
@@ -109,7 +116,7 @@ class SastanakSerializer(serializers.ModelSerializer):
         model = Sastanak
         fields = ['id_sastanak', 'naslov', 'napravljen_od', 'lokacija', 
                   'datum_vrijeme', 'sazetak', 'id_korisnik', 'id_status', 
-                  'status', 'korisnik_ime', 'tocke_dnevnog_reda', 'broj_potvrdenih']
+                  'status', 'korisnik_ime', 'tocke_dnevnog_reda', 'broj_potvrdenih', 'iz_diskusije']
         read_only_fields = ['id_sastanak', 'napravljen_od']
 
     def get_broj_potvrdenih(self, obj):

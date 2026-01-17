@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     create_user_by_admin, CustomTokenObtainPairView, google_auth, ChangePasswordView,
     sastanci_list_create, sastanak_detail, sastanak_potvrda, sastanak_change_status,
-    create_zakljucci, get_zakljucci_by_sastanak, get_zakljucci_by_tocka
+    create_zakljucci, get_zakljucci_by_sastanak, get_zakljucci_by_tocka,
+    sastanak_iz_diskusije
 )
 
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path('sastanci/<int:pk>/', sastanak_detail, name='sastanak_detail'),
     path('sastanci/<int:pk>/potvrda/', sastanak_potvrda, name='sastanak_potvrda'),
     path('sastanci/<int:pk>/status/', sastanak_change_status, name='sastanak_change_status'),
+    path('sastanci-iz-diskusije/', sastanak_iz_diskusije, name='sastanak_iz_diskusije'),
     
     path('zakljucci/', create_zakljucci, name='create_zakljucci'),
     path('zakljucci/sastanak/<int:sastanak_id>/', get_zakljucci_by_sastanak, name='get_zakljucci_by_sastanak'),

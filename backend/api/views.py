@@ -6,7 +6,8 @@ from rest_framework import status
 from .models import Korisnik, Sastanak, TockeDnevReda, StatusSastanka, Sudjeluje, Zakljucak
 from .serializer import (
     RegisterSerializer, ChangePasswordSerializer, 
-    SastanakSerializer, SudjelujeSerializer, ZakljucakSerializer
+    SastanakSerializer, SudjelujeSerializer, ZakljucakSerializer,
+    SastanakIzDiskusijeSerializer
 )
 from .auth_backend import verify_password, hash_password
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -16,6 +17,53 @@ from rest_framework.views import APIView
 from django.conf import settings
 from django.utils import timezone
 from django.core.mail import send_mail
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def sastanak_iz_diskusije(request):
+    """Endpoint koji StanBlog poziva kako bi kreirao sastanak iz diskusije.
+    - Sastanak odmah ide u status "Obavljen".
+    - Kreira se jedna tocka dnevnog reda s pravnim učinkom i glasanjem.
+    - Kreator se postavlja na prvog korisnika s ulogom "Predstavnik".
+    """
+
+    serializer = SastanakIzDiskusijeSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+
+    status_obavljen = StatusSastanka.objects.get(naziv_status__iexact="Obavljen")
+
+    predstavnik = Korisnik.objects.filter(id_uloge__naziv_uloge__iexact="Predstavnik").first()
+
+    sastanak = Sastanak.objects.create(
+        naslov=data['naslov'],
+        sazetak=data['cilj_sastanka'],
+        datum_vrijeme=data['termin'],
+        lokacija="Online",
+        napravljen_od=timezone.now(),
+        id_korisnik=predstavnik,
+        id_status=status_obavljen,
+        iz_diskusije=True,
+    )
+
+    TockeDnevReda.objects.create(
+        id_sastanak=sastanak,
+        broj_tocke=1,
+        naziv=data['tocka_dnevnog_reda'],
+        opis=data['cilj_sastanka'],
+        pravni_ucinak=True,
+        glasanje=True,
+        poveznica_diskusije="",
+    )
+
+    return Response({
+        'id_sastanak': sastanak.id_sastanak,
+        'naslov': sastanak.naslov,
+        'datum_vrijeme': sastanak.datum_vrijeme,
+        'status': sastanak.id_status.naziv_status,
+        'iz_diskusije': sastanak.iz_diskusije
+    }, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

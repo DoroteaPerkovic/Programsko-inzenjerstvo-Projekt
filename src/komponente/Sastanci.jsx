@@ -58,6 +58,7 @@ function Sastanci({ category, userRole }) {
           vrijeme: sastanak.datum_vrijeme,
           mjesto: sastanak.lokacija,
           stanje: sastanak.status?.naziv_status || "Planiran",
+          izDiskusije: sastanak.iz_diskusije || false,
           tockeDnevnogReda:
             sastanak.tocke_dnevnog_reda?.map((tocka) => ({
               id_tocke: tocka.id_tocke,
@@ -299,6 +300,11 @@ function Sastanci({ category, userRole }) {
                 <div className="sazetakAS">
                   <p>{sastanak.sazetak}</p>
                 </div>
+                {sastanak.izDiskusije && (
+                  <div className="diskusija">
+                    ℹ️ Kreiran iz diskusije
+                  </div>
+                )}
                 <div>
                   <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>
                     Točke dnevnog reda
