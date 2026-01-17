@@ -57,7 +57,13 @@ def sastanak_iz_diskusije(request):
         poveznica_diskusije="",
     )
 
-    return Response(SastanakSerializer(sastanak).data, status=status.HTTP_201_CREATED)
+    return Response({
+        'id_sastanak': sastanak.id_sastanak,
+        'naslov': sastanak.naslov,
+        'datum_vrijeme': sastanak.datum_vrijeme,
+        'status': sastanak.id_status.naziv_status,
+        'iz_diskusije': sastanak.iz_diskusije
+    }, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
