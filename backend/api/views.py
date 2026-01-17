@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 from django.utils import timezone
 from django.core.mail import send_mail
+import requests
 
 
 @api_view(['POST'])
@@ -336,6 +337,27 @@ def sastanak_potvrda(request, pk):
     serializer = SudjelujeSerializer(sudjelovanje)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+def send_email(to_emails, subject, content):
+    url = "https://api.brevo.com/v3/smtp/email"
+
+    headers = {
+        "accept": "application/json",
+        "api-key": "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",
+        "content-type": "application/json"
+    }
+
+    data = {
+        "sender": {
+            "name": "StanPlan",
+            "email": "nexifyp8@gmail.com"
+        },
+        "to": [{"email": email} for email in to_emails],
+        "subject": subject,
+        "htmlContent": content
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+    return response.status_code
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -375,7 +397,9 @@ def sastanak_change_status(request, pk):
         sastanak.save()
         
         if new_status_name == 'Objavljen':
-            all_users = Korisnik.objects.filter(aktivan=True)
+            # all_users = Korisnik.objects.filter(aktivan=True)
+            
+            recipient_emails = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
             subject = f'Novi sastanak objavljen: {sastanak.naslov}'
             message = f'''
 Poštovani,
@@ -396,20 +420,19 @@ StanPlan
 '''
             # recipient_list = [user.email for user in all_users]
 
-            recipient_list = ["luka.mateskovicc@gmail.com"]
+            recipient_list = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
 
             print("Sending email to:", recipient_list)
             
-            try:
-                send_mail(
-                    subject,
-                    message, 
-                    settings.EMAIL_HOST_USER,
-                    recipient_list,
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print(f"Error sending email: {e}")
+            response = send_email(
+                recipient_emails,
+                subject,
+                message
+            )
+
+            print("Sending email to:", recipient_emails)
+
+            print("Brevo status:", response)
 
         serializer = SastanakSerializer(sastanak)
         return Response(serializer.data, status=status.HTTP_200_OK)
