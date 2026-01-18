@@ -397,30 +397,67 @@ def sastanak_change_status(request, pk):
         sastanak.save()
         
         if new_status_name == 'Objavljen':
-            # all_users = Korisnik.objects.filter(aktivan=True)
+            all_users = Korisnik.objects.filter(aktivan=True, id_uloge__naziv_uloge = "Suvlasnik")
             
-            recipient_emails = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
             subject = f'Novi sastanak objavljen: {sastanak.naslov}'
             message = f'''
-Poštovani,
+<html>
+<body style="font-family: Arial, sans-serif;">
+Poštovani,<br><br>
 
-Novi sastanak je objavljen i sada je dostupan za pregled.
+Novi sastanak je objavljen i sada je dostupan za pregled.<br><br>
 
-Detalji sastanka:
-Naslov: {sastanak.naslov}
-Datum i vrijeme: {sastanak.datum_vrijeme.strftime('%d.%m.%Y. u %H:%Mh')}
-Lokacija: {sastanak.lokacija}
+<b>Detalji sastanka:</b><br>
+Naslov: {sastanak.naslov}<br>
+Datum i vrijeme: {sastanak.datum_vrijeme.strftime('%d.%m.%Y. u %H:%Mh')}<br>
+Lokacija: {sastanak.lokacija}<br><br>
 
-Molimo vas da potvrdite svoj dolazak.
+Molimo vas da potvrdite svoj dolazak.<br><br>
 
-Ova poruka je generirana automatski i ne trebate na nju odgovarati.
+Ova poruka je generirana automatski i ne trebate na nju odgovarati.<br><br>
 
-Lijep pozdrav,
+Lijep pozdrav,<br>
+StanPlan
+</body>
+</html>
+'''
+            recipient_list = [user.email for user in all_users]
+
+            print("Sending email to:", recipient_list)
+            
+            response = send_email(
+                recipient_emails,
+                subject,
+                message
+            )
+
+            print("Sending email to:", recipient_emails)
+
+            print("Brevo status:", response)
+        
+        elif new_status_name == 'Arhiviran':
+            all_users = Korisnik.objects.filter(aktivan=True, id_uloge__naziv_uloge = "Suvlasnik")
+            
+            recipient_emails = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
+            subject = f'Novi sastanak arhiviran: {sastanak.naslov}'
+            message = f'''
+<html>
+<body style="font-family: Arial, sans-serif;"
+Poštovani,<br><br>
+
+Sastanak {sastanak.naslov} je sada arhiviran i dostupan je za pregled.<br><br>
+
+<b>Sažetak sastanka:</b><br>
+Datum i vrijeme: {sastanak.datum_vrijeme.strftime('%d.%m.%Y. u %H:%Mh')}<br>
+Lokacija: {sastanak.lokacija}<br>
+Zaključci: {sastanak.zakljuci or "Zaključci nisu uneseni."}<br><br>
+
+Ova poruka je generirana automatski i ne trebate na nju odgovarati.<br><br>
+
+Lijep pozdrav,<br>
 StanPlan
 '''
-            # recipient_list = [user.email for user in all_users]
-
-            recipient_list = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
+            recipient_list = [user.email for user in all_users]
 
             print("Sending email to:", recipient_list)
             
