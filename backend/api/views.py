@@ -426,19 +426,16 @@ StanPlan
             print("Sending email to:", recipient_list)
             
             response = send_email(
-                recipient_emails,
+                recipient_list,
                 subject,
                 message
             )
-
-            print("Sending email to:", recipient_emails)
 
             print("Brevo status:", response)
         
         elif new_status_name == 'Arhiviran':
             all_users = Korisnik.objects.filter(aktivan=True, id_uloge__naziv_uloge = "Suvlasnik")
             
-            recipient_emails = ["luka.mateskovicc@gmail.com", "nexifyp8@gmail.com"]
             subject = f'Novi sastanak arhiviran: {sastanak.naslov}'
             message = f'''
 <html>
@@ -456,18 +453,20 @@ Ova poruka je generirana automatski i ne trebate na nju odgovarati.<br><br>
 
 Lijep pozdrav,<br>
 StanPlan
+</body>
+</html>
 '''
             recipient_list = [user.email for user in all_users]
 
             print("Sending email to:", recipient_list)
             
             response = send_email(
-                recipient_emails,
+                recipient_list,
                 subject,
                 message
             )
 
-            print("Sending email to:", recipient_emails)
+            print("Sending email to:", recipient_list)
 
             print("Brevo status:", response)
 
