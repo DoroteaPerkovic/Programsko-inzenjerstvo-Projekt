@@ -11,6 +11,7 @@ function Zakljucak() {
 
   const [sastanak, setSastanak] = useState(null);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -87,19 +88,23 @@ function Zakljucak() {
       const result = await createZakljucci(zakljucci);
 
       if (result.ok) {
-        const archiveResult = await changeSastanakStatus(sastanak.id, "Arhiviran");
-        
-        if (archiveResult.ok) {
-          alert("Zaključci uspješno spremljeni i sastanak je arhiviran!");
-        } else {
-          alert("Zaključci su spremljeni, ali sastanak nije mogao biti arhiviran.");
+        try {
+          await changeSastanakStatus(sastanak.id, "Arhiviran");
+        } catch (archiveErr) {
+          console.error("Archive error:", archiveErr);
         }
         
-        navigate(-1);
+        setSuccess("Zaključci uspješno spremljeni i sastanak je arhiviran!");
+
+        setTimeout(()=> {
+          navigate(-1);
+        }, 3000);
+
       } else {
         setError(result.data?.error || "Greška pri spremanju zaključaka");
       }
     } catch (err) {
+      console.error("Error saving conclusions:", err);
       setError("Greška pri spremanju zaključaka. Provjerite internetsku vezu.");
     } finally {
       setSubmitting(false);
@@ -174,6 +179,7 @@ function Zakljucak() {
             </button>
           </div>
           {error && <p className="error">{error}</p>}
+          {success && <p className="success">{success}</p>}
         </form>
       </div>
     </div>

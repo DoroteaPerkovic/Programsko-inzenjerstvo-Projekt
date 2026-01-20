@@ -263,13 +263,17 @@ function SastanakAdd() {
                       className={`button2 ${
                         tocka.pravniUcinak ? "active" : ""
                       }`}
-                      onClick={() =>
-                        handleTockaChange(
+                      onClick={() =>{
+                        const noviPravniUcinak = !tocka.pravniUcinak;
+                        handleTockaChange(                        
                           index,
                           "pravniUcinak",
-                          !tocka.pravniUcinak
-                        )
-                      }
+                          noviPravniUcinak
+                        );
+                        if (noviPravniUcinak){
+                          handleTockaChange(index,"potrebnoGlasanje", true);
+                        }
+                      }}
                     >
                       Pravni učinak
                     </button>
@@ -279,6 +283,7 @@ function SastanakAdd() {
                       className={`button2 ${
                         tocka.potrebnoGlasanje ? "active" : ""
                       }`}
+                      disabled={tocka.pravniUcinak}
                       onClick={() =>
                         handleTockaChange(
                           index,

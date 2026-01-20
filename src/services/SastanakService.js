@@ -152,6 +152,15 @@ export async function changeSastanakStatus(id, status) {
     body: JSON.stringify({ status }),
   });
 
-  const data = await response.json();
+  const responseText = await response.text();
+  
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch (err) {
+    console.error('Failed to parse response:', responseText);
+    data = { error: 'Server returned invalid response', details: responseText };
+  }
+  
   return { ok: response.ok, data };
 }

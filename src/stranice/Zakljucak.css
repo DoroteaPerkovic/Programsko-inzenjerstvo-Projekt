@@ -184,4 +184,22 @@ body{
   padding-right: 10px;
 }
 
+.success {
+  margin-top: 15px;
+  padding: 12px 16px;
+  background-color: #1b7a3a;
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.success {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+
 

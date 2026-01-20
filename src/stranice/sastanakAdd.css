@@ -241,6 +241,11 @@ body {
   box-sizing: border-box;
   overflow-x: auto;
 }
+.button2:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .tdrContainer::-webkit-scrollbar {
   width: 6px;

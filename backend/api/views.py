@@ -436,18 +436,35 @@ StanPlan
         elif new_status_name == 'Arhiviran':
             all_users = Korisnik.objects.filter(aktivan=True, id_uloge__naziv_uloge = "Suvlasnik")
             
-            subject = f'Novi sastanak arhiviran: {sastanak.naslov}'
+            tocke = TockeDnevReda.objects.filter(id_sastanak=sastanak).order_by('broj_tocke')
+            zakljucci_text = ""
+            
+            for tocka in tocke:
+                zakljucci = Zakljucak.objects.filter(id_tocke=tocka).order_by('-unesen_u')
+                if zakljucci.exists():
+                    for zakljucak in zakljucci:
+                        status_text = f" ({zakljucak.status})" if zakljucak.status else ""
+                        zakljucci_text += f"<b>{tocka.naziv}:</b> {zakljucak.tekst}{status_text}<br>"
+                else:
+                    zakljucci_text += f"<b>{tocka.naziv}:</b> Zaključak nije unesen.<br>"
+            
+            if not zakljucci_text:
+                zakljucci_text = "Zaključci nisu uneseni.<br>"
+            
+            subject = f'Sastanak arhiviran: {sastanak.naslov}'
             message = f'''
 <html>
-<body style="font-family: Arial, sans-serif;"
+<body style="font-family: Arial, sans-serif;">
 Poštovani,<br><br>
 
-Sastanak {sastanak.naslov} je sada arhiviran i dostupan je za pregled.<br><br>
+Sastanak "{sastanak.naslov}" je sada arhiviran i dostupan je za pregled.<br><br>
 
 <b>Sažetak sastanka:</b><br>
 Datum i vrijeme: {sastanak.datum_vrijeme.strftime('%d.%m.%Y. u %H:%Mh')}<br>
-Lokacija: {sastanak.lokacija}<br>
-Zaključci: {sastanak.zakljuci or "Zaključci nisu uneseni."}<br><br>
+Lokacija: {sastanak.lokacija}<br><br>
+
+<b>Zaključci:</b><br>
+{zakljucci_text}<br>
 
 Ova poruka je generirana automatski i ne trebate na nju odgovarati.<br><br>
 
@@ -458,15 +475,13 @@ StanPlan
 '''
             recipient_list = [user.email for user in all_users]
 
-            print("Sending email to:", recipient_list)
+            print("Sending archive email to:", recipient_list)
             
             response = send_email(
                 recipient_list,
                 subject,
                 message
             )
-
-            print("Sending email to:", recipient_list)
 
             print("Brevo status:", response)
 
