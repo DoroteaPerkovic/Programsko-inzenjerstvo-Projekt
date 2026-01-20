@@ -98,7 +98,7 @@ function SastanakAdd() {
   const fetchDiskusije = async () => {
     try {
       const response = await fetch(
-        "https://f18d2259-cbd6-4cda-b632-383992fbefa5.mock.pstmn.io/api/fetch-positive-outcome-discussions"
+        "https://stanblog.onrender.com/api/fetch-positive-outcome-discussions"
       );
       const data = await response.json();
       setDiskusije(data);

@@ -84,6 +84,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://programsko-inzenjerstvo-projekt-1.onrender.com",
+    "https://stanblog-1.onrender.com",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -112,8 +113,6 @@ REST_AUTH = {
     'USE_JWT': True,
     'JWT_TOKEN_CLAIMS_SERIALIZER': 'api.serializer.CustomTokenObtainPairSerializer',
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWS_CREDENTIALS = True
                           
