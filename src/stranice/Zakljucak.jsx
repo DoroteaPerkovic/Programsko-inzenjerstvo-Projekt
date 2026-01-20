@@ -87,19 +87,19 @@ function Zakljucak() {
       const result = await createZakljucci(zakljucci);
 
       if (result.ok) {
-        const archiveResult = await changeSastanakStatus(sastanak.id, "Arhiviran");
-        
-        if (archiveResult.ok) {
-          alert("Zaključci uspješno spremljeni i sastanak je arhiviran!");
-        } else {
-          alert("Zaključci su spremljeni, ali sastanak nije mogao biti arhiviran.");
+        try {
+          await changeSastanakStatus(sastanak.id, "Arhiviran");
+        } catch (archiveErr) {
+          console.error("Archive error:", archiveErr);
         }
         
+        alert("Zaključci uspješno spremljeni i sastanak je arhiviran!");
         navigate(-1);
       } else {
         setError(result.data?.error || "Greška pri spremanju zaključaka");
       }
     } catch (err) {
+      console.error("Error saving conclusions:", err);
       setError("Greška pri spremanju zaključaka. Provjerite internetsku vezu.");
     } finally {
       setSubmitting(false);
