@@ -329,13 +329,13 @@ function Sastanci({ category, userRole }) {
                                 href={
                                   toc.poveznica_diskusije.startsWith("http")
                                     ? toc.poveznica_diskusije
-                                    : `https://stanblog-1.onrender.com/${toc.poveznica_diskusije.replace(/^\/?/, "")}`
+                                    : `https://stanblog.onrender.com/api/${toc.poveznica_diskusije.replace(/^\/?/, "")}`
                                 }
                                 onClick={(e) => {
                                   e.preventDefault();
                                   const fullUrl = toc.poveznica_diskusije.startsWith("http")
                                     ? toc.poveznica_diskusije
-                                    : `https://stanblog.onrender.com/${toc.poveznica_diskusije.replace(/^\/?/, "")}`;
+                                    : `https://stanblog.onrender.com/api/${toc.poveznica_diskusije.replace(/^\/?/, "")}`;
                                   window.open(fullUrl, "_blank");
                                 }}
                                 target="_blank"
