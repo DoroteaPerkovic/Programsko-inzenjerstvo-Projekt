@@ -86,6 +86,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://programsko-inzenjerstvo-projekt-1.onrender.com",
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'api.authentication.KorisnikJWTAuthentication',
