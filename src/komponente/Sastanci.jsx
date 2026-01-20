@@ -326,7 +326,11 @@ function Sastanci({ category, userRole }) {
                           {toc.poveznica_diskusije && (
                             <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
                               <a 
-                                href={toc.poveznica_diskusije} 
+                                href={
+                                  toc.poveznica_diskusije.startsWith("http")  
+                                    ? toc.poveznica_diskusije
+                                    : `https://stanblog-1.onrender.com/${toc.poveznica_diskusije.replace(/^\/?/, "")}`
+                                } 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 style={{ color: "#007bff", textDecoration: "underline" }}
