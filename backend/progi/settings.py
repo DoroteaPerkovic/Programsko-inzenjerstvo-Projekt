@@ -85,9 +85,12 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://programsko-inzenjerstvo-projekt-1.onrender.com",
     "https://stanblog-1.onrender.com",
+    "https://stanblog.onrender.com",
     "http://localhost:3000",
     "http://localhost:5173",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
