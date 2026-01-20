@@ -11,6 +11,7 @@ function Zakljucak() {
 
   const [sastanak, setSastanak] = useState(null);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -93,8 +94,12 @@ function Zakljucak() {
           console.error("Archive error:", archiveErr);
         }
         
-        alert("Zaključci uspješno spremljeni i sastanak je arhiviran!");
-        navigate(-1);
+        setSuccess("Zaključci uspješno spremljeni i sastanak je arhiviran!");
+
+        setTimeout(()=> {
+          navigate(-1);
+        }, 3000);
+
       } else {
         setError(result.data?.error || "Greška pri spremanju zaključaka");
       }
@@ -174,6 +179,7 @@ function Zakljucak() {
             </button>
           </div>
           {error && <p className="error">{error}</p>}
+          {success && <p className="success">{success}</p>}
         </form>
       </div>
     </div>
