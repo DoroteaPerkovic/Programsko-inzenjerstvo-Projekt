@@ -327,13 +327,20 @@ function Sastanci({ category, userRole }) {
                             <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
                               <a 
                                 href={
-                                  toc.poveznica_diskusije.startsWith("http")  
+                                  toc.poveznica_diskusije.startsWith("http")
                                     ? toc.poveznica_diskusije
                                     : `https://stanblog-1.onrender.com/${toc.poveznica_diskusije.replace(/^\/?/, "")}`
-                                } 
-                                target="_blank" 
+                                }
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  const fullUrl = toc.poveznica_diskusije.startsWith("http")
+                                    ? toc.poveznica_diskusije
+                                    : `https://stanblog.onrender.com/${toc.poveznica_diskusije.replace(/^\/?/, "")}`;
+                                  window.open(fullUrl, "_blank");
+                                }}
+                                target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ color: "#007bff", textDecoration: "underline" }}
+                                style={{ color: "#007bff", textDecoration: "underline", cursor: "pointer" }}
                               >
                                 🔗 Povezana diskusija
                               </a>
