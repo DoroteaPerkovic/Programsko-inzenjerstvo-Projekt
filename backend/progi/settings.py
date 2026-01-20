@@ -72,6 +72,7 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,15 +80,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://programsko-inzenjerstvo-projekt-1.onrender.com",
     "https://stanblog-1.onrender.com",
+    "http://localhost:3000",
+    "http://localhost:5173",
 ]
-
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -114,7 +115,6 @@ REST_AUTH = {
     'JWT_TOKEN_CLAIMS_SERIALIZER': 'api.serializer.CustomTokenObtainPairSerializer',
 }
 
-CORS_ALLOWS_CREDENTIALS = True
                           
 
 ROOT_URLCONF = 'progi.urls'
