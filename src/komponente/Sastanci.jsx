@@ -287,12 +287,12 @@ function Sastanci({ category, userRole }) {
                     >
                       Dodaj zaključak
                     </button>
-                   {/* <button
+                    <button
                       className="arhBtn"
                       onClick={() => handleArhivirajClick(sastanak.id)}
                     >
                       Arhiviraj
-                    </button>*/}
+                    </button>
                   </div>
                 )}
               </div>
