@@ -11,6 +11,7 @@ function SastanakAdd() {
   const navigate = useNavigate();
   const location = useLocation();
   const { sastanakId } = location.state || {};
+  const [loadingDiskusije, setLoadingDiskusije] = useState(false);
 
   const [form, setForm] = useState({
     naslov: "",
@@ -68,6 +69,10 @@ function SastanakAdd() {
     };
 
     fetchSastanak();
+
+    if (sastanakId) {
+      fetchDiskusije();
+    }
   }, [sastanakId]);
 
   const handleChange = (field) => (e) =>
@@ -97,14 +102,17 @@ function SastanakAdd() {
 
   const fetchDiskusije = async () => {
     try {
+      setLoadingDiskusije(true);
       const response = await fetch(
-        "https://stanblog.onrender.com/api/fetch-positive-outcome-discussions"
+        "https://stanblog.onrender.com/api/fetch-positive-outcome-discussions",
       );
       const data = await response.json();
       setDiskusije(data);
     } catch (err) {
       console.error("Error fetching discussions:", err);
       setError("Greška pri dohvaćanju diskusija");
+    } finally {
+      setLoadingDiskusije(false);
     }
   };
 
@@ -138,7 +146,7 @@ function SastanakAdd() {
     setError("");
 
     const prazneTocke = form.tockeDnevnogReda.filter(
-      (t) => t.tekst.trim() !== ""
+      (t) => t.tekst.trim() !== "",
     );
 
     if (!form.naslov || !form.sazetak || !form.vrijeme || !form.mjesto) {
@@ -157,7 +165,7 @@ function SastanakAdd() {
       datum_vrijeme: form.vrijeme,
       lokacija: form.mjesto,
       tocke_dnevnog_reda: prazneTocke.map((tocka, index) => ({
-        ...( !sastanakId && { broj_tocke: index + 1 } ),
+        ...(!sastanakId && { broj_tocke: index + 1 }),
         naziv: tocka.tekst,
         opis: "",
         pravni_ucinak: tocka.pravniUcinak,
@@ -221,7 +229,7 @@ function SastanakAdd() {
                 type="datetime-local"
                 value={form.vrijeme}
                 onChange={handleChange("vrijeme")}
-                required = {!sastanakId}
+                required={!sastanakId}
                 min={new Date().toISOString().slice(0, 16)}
               />
             </label>
@@ -263,15 +271,15 @@ function SastanakAdd() {
                       className={`button2 ${
                         tocka.pravniUcinak ? "active" : ""
                       }`}
-                      onClick={() =>{
+                      onClick={() => {
                         const noviPravniUcinak = !tocka.pravniUcinak;
-                        handleTockaChange(                        
+                        handleTockaChange(
                           index,
                           "pravniUcinak",
-                          noviPravniUcinak
+                          noviPravniUcinak,
                         );
-                        if (noviPravniUcinak){
-                          handleTockaChange(index,"potrebnoGlasanje", true);
+                        if (noviPravniUcinak) {
+                          handleTockaChange(index, "potrebnoGlasanje", true);
                         }
                       }}
                     >
@@ -288,7 +296,7 @@ function SastanakAdd() {
                         handleTockaChange(
                           index,
                           "potrebnoGlasanje",
-                          !tocka.potrebnoGlasanje
+                          !tocka.potrebnoGlasanje,
                         )
                       }
                     >
@@ -323,16 +331,19 @@ function SastanakAdd() {
                     )}
                     {tocka.poveznica_diskusije && (
                       <div className="oznacenaDiskusija">
-                        <small>    
-                          {(() => {
-                            const diskusija = diskusije.find(
-                              (d) => d.poveznica === tocka.poveznica_diskusije
-                            );
-                            return diskusija
-                              ? `${diskusija.naslov} - ${diskusija.pitanje}`
-                              : tocka.poveznica_diskusije;
-                          })()}
-                        </small>{" "}
+                        <small>
+                          {loadingDiskusije
+                            ? "Učitavanje diskusije..."
+                            : (() => {
+                                const diskusija = diskusije.find(
+                                  (d) =>
+                                    d.poveznica === tocka.poveznica_diskusije,
+                                );
+                                return diskusija
+                                  ? `${diskusija.naslov} - ${diskusija.pitanje}`
+                                  : "";
+                              })()}
+                        </small>
                       </div>
                     )}
                   </div>

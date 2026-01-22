@@ -120,9 +120,9 @@ body {
   border: 1px solid #cbd2d9;
   border-radius: 8px;
   height: auto;
-  min-height: 140px;
+  min-height: fit-content;
   background: #f8fafc;
-  width: fit-content;
+  width: min-content;
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -148,12 +148,20 @@ body {
 
 .diskusije {
   grid-column: 1/-1;
-  width: fit-content;
+  overflow-wrap: break-word;
 }
 
 .oznacenaDiskusija {
   grid-column: 1/-1;
   color: black;
+  overflow-wrap: break-word;
+  overflow: auto;
+}
+
+.diskusije select{
+  overflow-wrap: break-word;
+  width: 100%;
+  
 }
 
 .tockaReda input {

@@ -40,10 +40,12 @@ function Sastanci({ category, userRole }) {
         console.log("Fetching sastanci from API...");
         console.log(
           "Access token:",
-          localStorage.getItem("access") ? "Present" : "Missing"
+          localStorage.getItem("access") ? "Present" : "Missing",
         );
 
         const data = await getSastanci();
+        console.log("RAW API response (sastanci):", data);
+
         console.log("Received sastanci data:", data);
 
         if (!Array.isArray(data)) {
@@ -97,17 +99,22 @@ function Sastanci({ category, userRole }) {
 
   useEffect(() => {
     const fetchZakljucci = async () => {
-      const arhiviraniSastanci = sastanci.filter(s => s.stanje === "Arhiviran");
-      
+      const arhiviraniSastanci = sastanci.filter(
+        (s) => s.stanje === "Arhiviran",
+      );
+
       for (const sastanak of arhiviraniSastanci) {
         try {
           const zakljucci = await getZakljucciBySastanak(sastanak.id);
-          setZakljucciData(prev => ({
+          setZakljucciData((prev) => ({
             ...prev,
-            [sastanak.id]: zakljucci
+            [sastanak.id]: zakljucci,
           }));
         } catch (err) {
-          console.error(`Error fetching zakljucci for sastanak ${sastanak.id}:`, err);
+          console.error(
+            `Error fetching zakljucci for sastanak ${sastanak.id}:`,
+            err,
+          );
         }
       }
     };
@@ -133,6 +140,7 @@ function Sastanci({ category, userRole }) {
       console.error("Error confirming attendance:", err);
       alert("Greška pri potvrđivanju dolaska");
     }
+    localStorage.setItem(`potvrdio-${id}`, checked ? "true" : "false");
   };
 
   const handleObjaviClick = (sastanakId) => {
@@ -168,8 +176,8 @@ function Sastanci({ category, userRole }) {
       if (result.ok) {
         setSastanci((prev) =>
           prev.map((s) =>
-            s.id === selectedSastanakId ? { ...s, stanje: newStatus } : s
-          )
+            s.id === selectedSastanakId ? { ...s, stanje: newStatus } : s,
+          ),
         );
 
         const toastText = {
@@ -205,7 +213,7 @@ function Sastanci({ category, userRole }) {
       </h1>
       <hr className={`pregrada ${category ? category.toLowerCase() : ""}`} />
 
-      {loading && <p style={{color:"black"}}>Učitavanje sastanaka...</p>}
+      {loading && <p style={{ color: "black" }}>Učitavanje sastanaka...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="okvirAS">
@@ -301,9 +309,7 @@ function Sastanci({ category, userRole }) {
                   <p>{sastanak.sazetak}</p>
                 </div>
                 {sastanak.izDiskusije && (
-                  <div className="diskusija">
-                    ℹ️ Kreiran iz diskusije
-                  </div>
+                  <div className="diskusija">ℹ️ Kreiran iz diskusije</div>
                 )}
                 <div>
                   <p className={`emoji ${sastanak.stanje.toLowerCase()}`}>
@@ -312,20 +318,28 @@ function Sastanci({ category, userRole }) {
                   <ul>
                     {(sastanak.tockeDnevnogReda || []).map((toc, idx) => {
                       const tockaZakljucci = zakljucciData[sastanak.id]?.find(
-                        z => z.id_tocke === toc.id_tocke
+                        (z) => z.id_tocke === toc.id_tocke,
                       );
-                      const zakljucakTekst = tockaZakljucci?.zakljucci?.[0]?.tekst;
-                      const zakljucakStatus = tockaZakljucci?.zakljucci?.[0]?.status;
-                      
+                      const zakljucakTekst =
+                        tockaZakljucci?.zakljucci?.[0]?.tekst;
+                      const zakljucakStatus =
+                        tockaZakljucci?.zakljucci?.[0]?.status;
+
                       return (
                         <li key={idx}>
                           <div>
                             {toc.naziv} {toc.pravniUcinak ? "Ⓟ" : ""}{" "}
-                            {toc.glasanje ? <i> - Održat će se glasanje</i> : ""}
+                            {toc.glasanje ? (
+                              <i> - Održat će se glasanje</i>
+                            ) : (
+                              ""
+                            )}
                           </div>
                           {toc.poveznica_diskusije && (
-                            <div style={{ marginTop: "5px", fontSize: "0.9em" }}>
-                              <a 
+                            <div
+                              style={{ marginTop: "5px", fontSize: "0.9em" }}
+                            >
+                              <a
                                 href={
                                   toc.poveznica_diskusije.startsWith("http")
                                     ? toc.poveznica_diskusije
@@ -333,14 +347,19 @@ function Sastanci({ category, userRole }) {
                                 }
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  const fullUrl = toc.poveznica_diskusije.startsWith("http")
-                                    ? toc.poveznica_diskusije
-                                    : `https://stanblog.onrender.com/api/${toc.poveznica_diskusije.replace(/^\/?/, "")}`;
+                                  const fullUrl =
+                                    toc.poveznica_diskusije.startsWith("http")
+                                      ? toc.poveznica_diskusije
+                                      : `https://stanblog.onrender.com/api/${toc.poveznica_diskusije.replace(/^\/?/, "")}`;
                                   window.open(fullUrl, "_blank");
                                 }}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ color: "#007bff", textDecoration: "underline", cursor: "pointer" }}
+                                style={{
+                                  color: "#007bff",
+                                  textDecoration: "underline",
+                                  cursor: "pointer",
+                                }}
                               >
                                 🔗 Povezana diskusija
                               </a>
@@ -351,7 +370,16 @@ function Sastanci({ category, userRole }) {
                               <strong>Zaključak:</strong>{" "}
                               {zakljucakTekst || "Zaključak nije unesen."}
                               {zakljucakStatus && (
-                                <span style={{ marginLeft: "10px", fontStyle: "italic", color: zakljucakStatus === "Izglasan" ? "green" : "red" }}>
+                                <span
+                                  style={{
+                                    marginLeft: "10px",
+                                    fontStyle: "italic",
+                                    color:
+                                      zakljucakStatus === "Izglasan"
+                                        ? "green"
+                                        : "red",
+                                  }}
+                                >
                                   ({zakljucakStatus})
                                 </span>
                               )}
@@ -381,14 +409,21 @@ function Sastanci({ category, userRole }) {
               {sastanak.stanje === "Objavljen" && userRole === "Suvlasnik" && (
                 <div>
                   <label className={`cbAS ${sastanak.stanje.toLowerCase()}`}>
-                    Potvrđujem dolazak{" "}
-                    {/*tu bi se zbilja trebalo zapisivati broj potvrdenih dolazaka */}
-                    <input
-                      type="checkbox"
-                      onChange={(e) =>
-                        handleCheckboxChange(sastanak.id, e.target.checked)
-                      }
-                    />
+                    Potvrđujem dolazak
+                    {(() => {
+                      const confirmedFromStorage =
+                        localStorage.getItem(`potvrdio-${sastanak.id}`) ===
+                        "true";
+                      return (
+                        <input
+                          type="checkbox"
+                          checked={confirmedFromStorage}
+                          onChange={(e) =>
+                            handleCheckboxChange(sastanak.id, e.target.checked)
+                          }
+                        />
+                      );
+                    })()}
                   </label>
                 </div>
               )}
