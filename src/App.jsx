@@ -11,6 +11,7 @@ import Suvlasnici from "./stranice/Suvlasnici";
 import SastanakAdd from "./stranice/sastanakAdd";
 import Profil from "./stranice/Profil";
 import Zakljucak from "./stranice/Zakljucak";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -18,21 +19,75 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<Admin />} />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/predstavnik"
-          element={<Navigate to="/predstavnik/objavljeni" replace />}
+          element={
+            <ProtectedRoute>
+              <Navigate to="/predstavnik/objavljeni" replace />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/predstavnik/:category" element={<Predstavnik />} />
+        <Route
+          path="/predstavnik/:category"
+          element={
+            <ProtectedRoute>
+              <Predstavnik />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/suvlasnici"
-          element={<Navigate to="/suvlasnici/objavljeni" replace />}
+          element={
+            <ProtectedRoute>
+              <Navigate to="/suvlasnici/objavljeni" replace />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/suvlasnici/:category" element={<Suvlasnici />} />
-        <Route path="/sastanakAdd" element={<SastanakAdd />} />
-        <Route path="/profil" element={<Profil />} />
-        <Route path="/zakljucak" element={<Zakljucak />} />
+        <Route
+          path="/suvlasnici/:category"
+          element={
+            <ProtectedRoute>
+              <Suvlasnici />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sastanakAdd"
+          element={
+            <ProtectedRoute>
+              <SastanakAdd />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profil"
+          element={
+            <ProtectedRoute>
+              <Profil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/zakljucak"
+          element={
+            <ProtectedRoute>
+              <Zakljucak />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
@@ -40,3 +95,4 @@ function App() {
 }
 
 export default App;
+
