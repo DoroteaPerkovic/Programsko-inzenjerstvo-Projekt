@@ -274,7 +274,7 @@ function Sastanci({ category, userRole }) {
                         {confirmAction === "obavljanje" &&
                           "Jeste li sigurni da želite označiti ovaj sastanak kao obavljen?"}
                         {confirmAction === "arhiva" &&
-                          "Jeste li sigurni da želite arhivirati sastanak?"}
+                          "Jeste li sigurni da želite arhivirati sastanak(time šaljete mail svim suvlasnicima)?"}
                       </p>
                       <div className="modalButtons">
                         <button onClick={confirmStatusChange}>Da</button>
