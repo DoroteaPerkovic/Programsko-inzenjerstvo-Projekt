@@ -116,14 +116,16 @@ function SastanakAdd() {
     }
   };
 
-  const toggleDropdown = async (index) => {
+  const toggleDropdown = (index) => {
     if (openDropdown === index) {
       setOpenDropdown(null);
-    } else {
-      if (diskusije.length === 0) {
-        await fetchDiskusije();
-      }
-      setOpenDropdown(index);
+      return;
+    }
+
+    setOpenDropdown(index);
+
+    if (diskusije.length === 0 && !loadingDiskusije) {
+      fetchDiskusije();
     }
   };
 
@@ -307,12 +309,18 @@ function SastanakAdd() {
                       type="button"
                       className="button2"
                       onClick={() => toggleDropdown(index)}
+                      disabled={loadingDiskusije && openDropdown === index}
                     >
-                      Poveži s diskusijom
+                      {loadingDiskusije && openDropdown === index
+                        ? "Učitavanje..."
+                        : "Poveži s diskusijom"}
                     </button>
+
                     {openDropdown === index && (
                       <div className="diskusije">
-                        {diskusije.length > 0 ? (
+                        {loadingDiskusije ? (
+                          <p>Učitavanje diskusija...</p>
+                        ) : diskusije.length > 0 ? (
                           <select
                             onChange={(e) => handleDiskusijaChange(index, e)}
                           >
@@ -325,7 +333,7 @@ function SastanakAdd() {
                             ))}
                           </select>
                         ) : (
-                          <p>Učitavanje diskusija...</p>
+                          <p>Nema dostupnih diskusija</p>
                         )}
                       </div>
                     )}
